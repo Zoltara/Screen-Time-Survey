@@ -370,7 +370,7 @@
       winaiScaleQ:"How likely would you be to actually use an app like this?",
       scaleLo:"Definitely not", scaleHi:"Definitely yes",
       testerEyebrow:"One last thing", testerQ:"Would you be interested to be a tester of this app?",
-      testerHelp:"Try it for one month and tell me if it helps you to reduce screen time and improve your habits.",
+      testerHelp:"Try it for one month and tell me if it helps you reduce screen time and improve your habits.",
       testerYes:"Yes, I'm interested", testerNo:"No thanks",
       testerNickLabel:"Nickname", testerNickPlaceholder:"Your nickname", testerClassLabel:"Class",
       testerNote:"Extra points included.", testerSign:"I'll contact you later.\nThank you, A. Rambo",
@@ -727,7 +727,7 @@
       body.appendChild(opts);
 
       var note = document.createElement('p'); note.className='help'; note.style.cssText='margin:14px 0 0; white-space:pre-line;';
-      note.innerHTML = '<b>'+t('testerNote')+'</b><br>'+t('testerSign');
+      note.innerHTML = '<b style="color:var(--good)">'+t('testerNote')+'</b><br>'+t('testerSign');
       body.appendChild(note);
 
       if(state.tester === 'Y'){
