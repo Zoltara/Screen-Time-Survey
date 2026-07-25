@@ -12,7 +12,8 @@ var REPORT_PASSWORD = 'report'; // must match CONFIG.REPORT_PASSWORD in survey.h
 
 var HEADERS = [
   'Timestamp', 'Class', 'Hours', 'Platforms', 'Device', 'OS',
-  'WantLess', 'Actions', 'Impacts', 'Activity', 'WinaiInterest'
+  'WantLess', 'Actions', 'Impacts', 'Activity', 'WinaiInterest',
+  'Tester', 'TesterNick', 'TesterClass'
 ];
 
 function getSheet_(){
@@ -47,7 +48,10 @@ function doPost(e){
       Array.isArray(data.actions) ? data.actions.join(',') : '',
       Array.isArray(data.impacts) ? data.impacts.join(',') : '',
       data.activity || '',
-      data.winai || ''
+      data.winai || '',
+      data.tester || '',
+      data.testerNick || '',
+      data.testerClass || ''
     ]);
     return jsonOut_({ ok: true });
   }catch(err){
@@ -77,7 +81,10 @@ function doGet(e){
       actions: row[7] ? String(row[7]).split(',').filter(Boolean) : [],
       impacts: row[8] ? String(row[8]).split(',').filter(Boolean) : [],
       activity: row[9],
-      winai: Number(row[10]) || 0
+      winai: Number(row[10]) || 0,
+      tester: row[11],
+      testerNick: row[12],
+      testerClass: row[13]
     };
   });
   return jsonOut_(records);

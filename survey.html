@@ -13,6 +13,7 @@
     --radius: 20px;
     --accent: var(--screen);
     --accent-soft: var(--screen-soft);
+    --on-accent: #08101f;
     color-scheme: dark;
   }
   :root[data-theme="light"]{
@@ -24,6 +25,7 @@
     --human:#d9642f; --human-soft:rgba(217,100,47,.12); --human-dim:#b6511f;
     --good:#1f9d55;
     --shadow: 0 24px 50px -28px rgba(30,40,70,.25);
+    --on-accent: #ffffff;
     color-scheme: light;
   }
   @media (prefers-color-scheme: light){
@@ -36,6 +38,7 @@
       --human:#d9642f; --human-soft:rgba(217,100,47,.12); --human-dim:#b6511f;
       --good:#1f9d55;
       --shadow: 0 24px 50px -28px rgba(30,40,70,.25);
+      --on-accent: #ffffff;
       color-scheme: light;
     }
   }
@@ -84,7 +87,7 @@
     font-size:12px; font-weight:700; padding:6px 10px; border-radius:99px; cursor:pointer;
     letter-spacing:.02em;
   }
-  .lang-btn.active{ background:var(--accent); color:#08101f; }
+  .lang-btn.active{ background:var(--accent); color:var(--on-accent); }
   .theme-toggle{
     width:34px;height:34px;border-radius:50%;
     border:1px solid var(--border); background:var(--surface);
@@ -158,7 +161,7 @@
   }
   .chip.round .mark{ border-radius:50%; }
   .chip.selected{ border-color: var(--accent); background: var(--accent-soft); }
-  .chip.selected .mark{ background:var(--accent); border-color:var(--accent); color:#0a0e1a; }
+  .chip.selected .mark{ background:var(--accent); border-color:var(--accent); color:var(--on-accent); }
   .chip .sub{ font-size:12px; font-weight:500; color:var(--text-faint); }
   .chip.center{ justify-content:center; text-align:center; }
 
@@ -171,7 +174,7 @@
     text-decoration:none;
   }
   .btn:active{ transform: scale(.98); }
-  .btn.primary{ background: var(--accent); color:#08101f; }
+  .btn.primary{ background: var(--accent); color:var(--on-accent); }
   .btn.primary:hover{ filter:brightness(1.08); }
   .btn.primary:disabled{ opacity:.35; cursor:not-allowed; }
   .btn.ghost{ background:transparent; color:var(--text-dim); border:1px solid var(--border); flex:0 0 auto; padding:14px 16px; }
@@ -216,6 +219,16 @@
   .scale-btn:hover{ border-color:var(--text-faint); }
   .scale-btn.selected{ border-color:var(--human); background:var(--human-soft); color:var(--human); }
   .scale-caps{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-faint); margin-top:8px; }
+
+  /* tester opt-in */
+  .tester-img{ width:100%; max-width:220px; display:block; margin:4px auto 14px; border-radius:14px; }
+  .field-label{ font-size:12.5px; font-weight:700; color:var(--text-dim); margin-bottom:8px; }
+  .text-input{
+    width:100%; border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+    border-radius:14px; padding:14px 16px; font-size:15px; font-family:inherit;
+  }
+  .text-input::placeholder{ color:var(--text-faint); }
+  .text-input:focus{ outline:none; border-color:var(--accent); }
 
   /* review */
   .review-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:6px; flex:1; overflow:auto; }
@@ -329,7 +342,7 @@
   var S = {
     en: {
       brandLine1:"Teacher Rambo's", brandLine2:"Social Media Survey",
-      stepOf: function(n){ return 'Step '+n+' of 10'; },
+      stepOf: function(n){ return 'Step '+n+' of 11'; },
       introEyebrow:"School Research · Anonymous",
       introTitle:"A quick survey about Screen Time",
       introLede:"Anonymous, takes less than 5 minutes",
@@ -356,9 +369,14 @@
       winaiSteps:["You scroll for your allowed time.","Winai locks the apps automatically.","Do push-ups, squats, or another exercise — Winai counts your reps.","Finish the set and your apps unlock again."],
       winaiScaleQ:"How likely would you be to actually use an app like this?",
       scaleLo:"Definitely not", scaleHi:"Definitely yes",
+      testerEyebrow:"One last thing", testerQ:"Would you be interested to be a tester of this app?",
+      testerHelp:"Try it for one month and tell me if it helps you to reduce screen time and improve your habits.",
+      testerYes:"Yes, I'm interested", testerNo:"No thanks",
+      testerNickLabel:"Nickname", testerNickPlaceholder:"Your nickname", testerClassLabel:"Class",
+      testerNote:"Extra points included.", testerSign:"I'll contact you later.\nThank you, A. Rambo",
       s10Eyebrow:"Last step", s10Q:"Review & send", s10Help:"Nothing identifying is included — just this summary.",
       rClass:"Class", rHours:"Hours/day", rPlatforms:"Platforms", rDevice:"Main device", rOS:"Operating system", rWantLess:"Wants to use less",
-      rActions:"Already tried", rImpacts:"Affected areas", rActivity:"Physical activity", rWinai:"Winai interest",
+      rActions:"Already tried", rImpacts:"Affected areas", rActivity:"Physical activity", rWinai:"Winai interest", rTester:"Tester sign-up",
       sendBtn:"Send my answers", sendingBtn:"Sending…",
       doneTitle:"Thanks for the honest answers.",
       doneBody:"Your response is anonymous and will be used for a research report.",
@@ -374,7 +392,7 @@
     },
     th: {
       brandLine1:"ครูแรมโบ้", brandLine2:"แบบสำรวจโซเชียลมีเดีย",
-      stepOf: function(n){ return 'ขั้นตอนที่ '+n+' จาก 10'; },
+      stepOf: function(n){ return 'ขั้นตอนที่ '+n+' จาก 11'; },
       introEyebrow:"งานวิจัยในโรงเรียน · ไม่ระบุตัวตน",
       introTitle:"แบบสำรวจสั้น ๆ เกี่ยวกับเวลาหน้าจอ",
       introLede:"ไม่ระบุตัวตน ใช้เวลาไม่ถึง 5 นาที",
@@ -401,9 +419,14 @@
       winaiSteps:["เล่นโซเชียลมีเดียตามเวลาที่กำหนด","Winai จะล็อกแอปโดยอัตโนมัติ","ทำวิดพื้น สควอท หรือท่าอื่น ๆ — Winai นับจำนวนครั้งให้","ทำครบเซตแล้วแอปจะปลดล็อกอีกครั้ง"],
       winaiScaleQ:"คุณคิดว่าจะใช้แอปแบบนี้จริงไหม?",
       scaleLo:"ไม่ใช้แน่นอน", scaleHi:"ใช้แน่นอน",
+      testerEyebrow:"เรื่องสุดท้าย", testerQ:"สนใจเป็นผู้ทดลองใช้แอปนี้ไหม?",
+      testerHelp:"ลองใช้เป็นเวลา 1 เดือน แล้วบอกครูว่าแอปนี้ช่วยลดเวลาหน้าจอและพัฒนาพฤติกรรมของคุณได้ไหม",
+      testerYes:"สนใจ", testerNo:"ไม่สนใจ",
+      testerNickLabel:"ชื่อเล่น", testerNickPlaceholder:"ชื่อเล่นของคุณ", testerClassLabel:"ชั้น",
+      testerNote:"มีคะแนนพิเศษให้สำหรับผู้ทดลองใช้", testerSign:"ครูจะติดต่อกลับภายหลัง\nขอบคุณครับ - ครูแรมโบ้",
       s10Eyebrow:"ขั้นตอนสุดท้าย", s10Q:"ตรวจทานแล้วส่ง", s10Help:"ไม่มีข้อมูลระบุตัวตน มีแค่สรุปนี้เท่านั้น",
       rClass:"ชั้น", rHours:"ชม./วัน", rPlatforms:"แพลตฟอร์ม", rDevice:"อุปกรณ์หลัก", rOS:"ระบบปฏิบัติการ", rWantLess:"อยากใช้น้อยลง",
-      rActions:"เคยลองทำ", rImpacts:"ผลกระทบ", rActivity:"การเคลื่อนไหวร่างกาย", rWinai:"ความสนใจ Winai",
+      rActions:"เคยลองทำ", rImpacts:"ผลกระทบ", rActivity:"การเคลื่อนไหวร่างกาย", rWinai:"ความสนใจ Winai", rTester:"สมัครเป็นผู้ทดลองใช้",
       sendBtn:"ส่งคำตอบของฉัน", sendingBtn:"กำลังส่ง…",
       doneTitle:"ขอบคุณสำหรับคำตอบที่ตรงไปตรงมา",
       doneBody:"คำตอบของคุณไม่ระบุตัวตน และจะถูกนำไปใช้ทำรายงานวิจัย",
@@ -448,7 +471,8 @@
 
   var state = {
     cls:null, hours:null, platforms:[], device:null, os:null, wantLess:null,
-    actions:[], impacts:[], activity:null, winai:null
+    actions:[], impacts:[], activity:null, winai:null,
+    tester:null, testerNick:'', testerClass:null
   };
 
   function chip(html, selected, onClick, opts){
@@ -686,9 +710,57 @@
     }
   });
 
-  // 10. review + send
+  // 10. tester opt-in
+  function testerCanNext(){
+    return state.tester === 'N' || (state.tester === 'Y' && !!(state.testerNick && state.testerNick.trim()) && !!state.testerClass);
+  }
   steps.push({
-    key:'review', title:function(){return t('stepOf')(10);},
+    key:'tester', title:function(){return t('stepOf')(10);},
+    render:function(body){
+      body.innerHTML =
+        '<div class="eyebrow">'+t('testerEyebrow')+'</div>' +
+        '<h1 class="q">'+t('testerQ')+'</h1>' +
+        '<img class="tester-img" src="images/Rambo5.png" alt="">' +
+        '<p class="help">'+t('testerHelp')+'</p>';
+      var opts = document.createElement('div'); opts.className='options';
+      renderSingle(opts, ["Y","N"], {Y:t('testerYes'), N:t('testerNo')}, state.tester, function(v){ state.tester=v; refreshBody(); });
+      body.appendChild(opts);
+
+      var note = document.createElement('p'); note.className='help'; note.style.cssText='margin:14px 0 0; white-space:pre-line;';
+      note.innerHTML = '<b>'+t('testerNote')+'</b><br>'+t('testerSign');
+      body.appendChild(note);
+
+      if(state.tester === 'Y'){
+        var wrap = document.createElement('div'); wrap.style.marginTop='16px';
+
+        var nickLabel = document.createElement('div'); nickLabel.className='field-label'; nickLabel.textContent = t('testerNickLabel');
+        wrap.appendChild(nickLabel);
+        var nickInput = document.createElement('input');
+        nickInput.type='text'; nickInput.className='text-input'; nickInput.placeholder = t('testerNickPlaceholder');
+        nickInput.value = state.testerNick || '';
+        nickInput.addEventListener('input', function(){
+          state.testerNick = nickInput.value;
+          nextBtnRef.disabled = !testerCanNext();
+        });
+        wrap.appendChild(nickInput);
+
+        var classLabel = document.createElement('div'); classLabel.className='field-label'; classLabel.style.marginTop='14px'; classLabel.textContent = t('testerClassLabel');
+        wrap.appendChild(classLabel);
+        var classOpts = document.createElement('div'); classOpts.className='options grid3';
+        CLASSES.forEach(function(c){
+          classOpts.appendChild(chip(c, state.testerClass===c, function(){ state.testerClass=c; refreshBody(); }, {center:true, round:true}));
+        });
+        wrap.appendChild(classOpts);
+        body.appendChild(wrap);
+      }
+
+      var nextBtnRef = addNav(body, {back:9, canNext:testerCanNext, next:11});
+    }
+  });
+
+  // 11. review + send
+  steps.push({
+    key:'review', title:function(){return t('stepOf')(11);},
     render:function(body){
       body.innerHTML = '<div class="eyebrow">'+t('s10Eyebrow')+'</div><h1 class="q">'+t('s10Q')+'</h1><p class="help">'+t('s10Help')+'</p>';
       var list = document.createElement('div'); list.className='review-list';
@@ -706,18 +778,19 @@
       row(t('rImpacts'), state.impacts.map(function(v){return t('impacts')[v];}).join(', '));
       row(t('rActivity'), t('activity')[state.activity]);
       row(t('rWinai'), state.winai + ' / 5');
+      row(t('rTester'), state.tester === 'Y' ? (state.testerNick + ' — ' + state.testerClass) : t('testerNo'));
       body.appendChild(list);
 
       var btnRow = document.createElement('div'); btnRow.className='btn-row';
       var back = document.createElement('button'); back.className='btn ghost'; back.textContent=t('back');
-      back.addEventListener('click', function(){ goTo(9); });
+      back.addEventListener('click', function(){ goTo(10); });
       btnRow.appendChild(back);
 
       var send = document.createElement('button');
       send.type='button'; send.className='btn primary'; send.textContent = t('sendBtn');
       send.addEventListener('click', function(){
         send.disabled = true; send.textContent = t('sendingBtn');
-        submitResponse().then(function(){ goTo(11); });
+        submitResponse().then(function(){ goTo(12); });
       });
       btnRow.appendChild(send);
       body.appendChild(btnRow);
@@ -742,7 +815,10 @@
       cls: state.cls, hours: state.hours, platforms: state.platforms,
       device: state.device, os: state.os || '', wantLess: state.wantLess,
       actions: state.actions, impacts: state.impacts, activity: state.activity,
-      winai: state.winai
+      winai: state.winai,
+      tester: state.tester || '',
+      testerNick: state.tester === 'Y' ? state.testerNick : '',
+      testerClass: state.tester === 'Y' ? state.testerClass : ''
     };
   }
 
@@ -771,6 +847,7 @@
     next.addEventListener('click', function(){ goTo(opts.next); });
     row.appendChild(next);
     body.appendChild(row);
+    return next;
   }
 
   var current = 0;
@@ -801,7 +878,7 @@
     var wrap = document.getElementById('progressWrap');
     if(step.progress === false){ wrap.style.display='none'; return; }
     wrap.style.display='block';
-    var total = 10;
+    var total = 11;
     var n = i;
     var pct = Math.round((n/total)*100);
     document.getElementById('progressFill').style.width = pct+'%';
