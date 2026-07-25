@@ -181,13 +181,7 @@
   /* intro */
   .intro-title{ font-size:26px; font-weight:800; letter-spacing:-.015em; line-height:1.28; margin:14px 0 10px; text-wrap:balance; }
   .intro-lede{ color:var(--text-dim); font-size:15px; line-height:1.6; margin:0 0 22px; }
-  .meta-row{ display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap; }
-  .meta-pill{
-    font-size:12.5px; font-weight:600; color:var(--text-dim);
-    border:1px solid var(--border); background:var(--surface-2);
-    border-radius:99px; padding:7px 12px; display:flex; align-items:center; gap:6px;
-  }
-  .meta-pill b{ color:var(--text); }
+  .intro-img{ width:100%; max-width:280px; display:block; margin:0 auto; border-radius:14px; }
 
   /* winai section */
   .winai-card{ background: linear-gradient(180deg, var(--human-soft), transparent 40%); }
@@ -336,7 +330,6 @@
       introEyebrow:"School Research · Anonymous",
       introTitle:"A quick survey about Screen Time",
       introLede:"Anonymous, takes less than 5 minutes",
-      metaTime:"~4 min", metaAnon:"Fully anonymous", metaQs:"10 quick questions",
       start:"Start the survey",
       s1Eyebrow:"About you", s1Q:"What is your class level?", s1Help:"",
       s2Eyebrow:"Daily usage", s2Q:"How many hours a day do you spend on social media?", s2Help:"Your best honest guess for a typical day.",
@@ -382,7 +375,6 @@
       introEyebrow:"งานวิจัยในโรงเรียน · ไม่ระบุตัวตน",
       introTitle:"แบบสำรวจสั้น ๆ เกี่ยวกับเวลาหน้าจอ",
       introLede:"ไม่ระบุตัวตน ใช้เวลาไม่ถึง 5 นาที",
-      metaTime:"~4 นาที", metaAnon:"ไม่ระบุตัวตน 100%", metaQs:"10 คำถามสั้น ๆ",
       start:"เริ่มทำแบบสำรวจ",
       s1Eyebrow:"เกี่ยวกับคุณ", s1Q:"คุณเรียนอยู่ชั้นอะไร?", s1Help:"",
       s2Eyebrow:"การใช้งานต่อวัน", s2Q:"คุณใช้โซเชียลมีเดียวันละกี่ชั่วโมง?", s2Help:"ตอบตามจริงเท่าที่คุณคิดว่าใกล้เคียงที่สุด",
@@ -536,11 +528,7 @@
         '<div class="eyebrow">'+t('introEyebrow')+'</div>' +
         '<div class="intro-title">'+t('introTitle')+'</div>' +
         '<p class="intro-lede">'+t('introLede')+'</p>' +
-        '<div class="meta-row">' +
-          '<div class="meta-pill">⏱ <b>'+t('metaTime')+'</b></div>' +
-          '<div class="meta-pill">🙈 <b>'+t('metaAnon')+'</b></div>' +
-          '<div class="meta-pill">📊 <b>'+t('metaQs')+'</b></div>' +
-        '</div>';
+        '<img class="intro-img" src="images/Rambo4.png" alt="">';
       var btnRow = document.createElement('div');
       btnRow.className = 'btn-row';
       var start = document.createElement('button');
