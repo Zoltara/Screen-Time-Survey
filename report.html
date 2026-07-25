@@ -1,0 +1,364 @@
+<meta charset="utf-8">
+<title>Class Report Builder — Teacher Rambo's Social Media Survey</title>
+<style>
+  :root{
+    --bg:#0a0e1a; --bg-2:#0d1220;
+    --surface:#131829; --surface-2:#1a2036; --surface-hover:#1f2640;
+    --border:#262d47; --border-soft:#1d2338;
+    --text:#eef1fb; --text-dim:#98a0bd; --text-faint:#5b6386;
+    --screen:#5b8cff; --screen-soft:rgba(91,140,255,.14);
+    --human:#ff8a5c; --human-soft:rgba(255,138,92,.16);
+    --good:#4ade80; --good-soft:rgba(74,222,128,.14);
+    --shadow: 0 24px 60px -24px rgba(0,0,0,.65);
+    --radius: 18px;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1f7; --bg-2:#e6eaf3;
+    --surface:#ffffff; --surface-2:#f7f9fd; --surface-hover:#eef1f9;
+    --border:#d7dceb; --border-soft:#e3e7f2;
+    --text:#161a26; --text-dim:#545b72; --text-faint:#8891a8;
+    --screen:#3163e0; --screen-soft:rgba(49,99,224,.10);
+    --human:#d9642f; --human-soft:rgba(217,100,47,.12);
+    --good:#1f9d55; --good-soft:rgba(31,157,85,.10);
+    --shadow: 0 24px 50px -28px rgba(30,40,70,.25);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#eef1f7; --bg-2:#e6eaf3;
+      --surface:#ffffff; --surface-2:#f7f9fd; --surface-hover:#eef1f9;
+      --border:#d7dceb; --border-soft:#e3e7f2;
+      --text:#161a26; --text-dim:#545b72; --text-faint:#8891a8;
+      --screen:#3163e0; --screen-soft:rgba(49,99,224,.10);
+      --human:#d9642f; --human-soft:rgba(217,100,47,.12);
+      --good:#1f9d55; --good-soft:rgba(31,157,85,.10);
+      --shadow: 0 24px 50px -28px rgba(30,40,70,.25);
+      color-scheme: light;
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(700px 460px at 10% -10%, var(--screen-soft), transparent 55%),
+      radial-gradient(600px 420px at 105% 10%, var(--human-soft), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans Thai", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding: 22px 18px 70px;
+  }
+  .mono{ font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",monospace; font-variant-numeric:tabular-nums; }
+  .wrap{ max-width:860px; margin:0 auto; }
+
+  .topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
+  .brand{ display:flex; align-items:center; gap:10px; }
+  .brand-mark{ width:36px;height:36px;border-radius:10px; background:linear-gradient(135deg, var(--screen), var(--human)); display:flex;align-items:center;justify-content:center; font-size:17px; flex:none; }
+  .brand-text{ font-size:13px; color:var(--text-dim); line-height:1.25; }
+  .brand-text b{ color:var(--text); font-weight:700; font-size:15px; }
+  .toolbar{ display:flex; gap:8px; }
+  .icon-btn{ width:36px;height:36px;border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--text-dim); cursor:pointer; display:flex;align-items:center;justify-content:center; font-size:15px; }
+  .icon-btn:hover{ color:var(--text); border-color:var(--text-faint); }
+
+  .card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; margin-bottom:18px; }
+  .card h2{ font-size:16px; margin:0 0 4px; letter-spacing:-.01em; }
+  .card .sub{ color:var(--text-dim); font-size:13px; margin:0 0 16px; }
+
+  textarea#pasteBox{
+    width:100%; min-height:150px; resize:vertical; border-radius:14px;
+    border:1px solid var(--border); background:var(--surface-2); color:var(--text);
+    padding:14px 16px; font-size:13.5px; line-height:1.55;
+    font-family:"Cascadia Mono","Cascadia Code",Consolas,"SF Mono",monospace;
+  }
+  textarea#pasteBox:focus{ outline:none; border-color:var(--screen); }
+  .row{ display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap; }
+  .btn{ appearance:none; border:none; border-radius:12px; padding:12px 20px; font-size:14.5px; font-weight:700; cursor:pointer; }
+  .btn.primary{ background:var(--screen); color:#08101f; }
+  .btn.primary:hover{ filter:brightness(1.08); }
+  .btn.ghost{ background:transparent; border:1px solid var(--border); color:var(--text-dim); }
+  .btn.ghost:hover{ color:var(--text); border-color:var(--text-faint); }
+  .parse-note{ font-size:12.5px; color:var(--text-faint); }
+  .parse-note.warn{ color:var(--human); }
+
+  #report{ display:none; }
+  #report.show{ display:block; }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+  @media (max-width:680px){ .stat-grid{ grid-template-columns:repeat(2,1fr); } }
+  .stat{ background:var(--surface-2); border:1px solid var(--border-soft); border-radius:14px; padding:16px; }
+  .stat .v{ font-size:26px; font-weight:800; letter-spacing:-.02em; }
+  .stat .k{ font-size:12px; color:var(--text-dim); margin-top:2px; }
+  .stat.human .v{ color:var(--human); }
+  .stat.screen .v{ color:var(--screen); }
+  .stat.good .v{ color:var(--good); }
+
+  .chart-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:760px){ .chart-grid{ grid-template-columns:1fr; } }
+  .bars{ display:flex; flex-direction:column; gap:9px; }
+  .bar-row{ display:grid; grid-template-columns:140px 1fr 38px; align-items:center; gap:10px; }
+  .bar-label{ font-size:11.5px; line-height:1.25; color:var(--text-dim); text-align:right; white-space:normal; }
+  .bar-track{ height:14px; border-radius:7px; background:var(--surface-2); border:1px solid var(--border-soft); overflow:hidden; }
+  .bar-fill{ height:100%; border-radius:7px; }
+  .bar-value{ font-size:12px; color:var(--text-faint); font-weight:700; }
+
+  .conclusions{ display:flex; flex-direction:column; gap:10px; }
+  .conclusion{ display:flex; gap:10px; align-items:flex-start; font-size:14px; line-height:1.55; color:var(--text); background:var(--surface-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px; }
+  .conclusion .dot{ flex:none; width:8px;height:8px;border-radius:50%; margin-top:6px; background:var(--screen); }
+  .conclusion.human .dot{ background:var(--human); }
+
+  .report-title{ font-size:20px; font-weight:800; margin:0 0 2px; letter-spacing:-.01em; }
+  .report-date{ font-size:12.5px; color:var(--text-faint); margin:0 0 18px; }
+
+  .docx-note{ font-size:13px; color:var(--text-dim); line-height:1.6; background:var(--good-soft); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px; }
+  .docx-note b{ color:var(--good); }
+
+  @media print{
+    body{ background:#fff !important; color:#000 !important; padding:0; }
+    .no-print{ display:none !important; }
+    .card{ box-shadow:none; border:1px solid #ccc; break-inside:avoid; }
+    :root{ --text:#111; --text-dim:#444; --text-faint:#666; --surface:#fff; --surface-2:#f4f4f4; --border:#ccc; --border-soft:#ddd; }
+  }
+</style>
+
+<div class="wrap">
+  <div class="topbar no-print">
+    <div class="brand">
+      <div class="brand-mark">📊</div>
+      <div class="brand-text"><b>Class Report Builder</b><br>Teacher Rambo's Social Media Survey</div>
+    </div>
+    <div class="toolbar">
+      <button class="icon-btn" id="themeToggle" title="Toggle theme">◐</button>
+      <button class="icon-btn" id="printBtn" title="Print / save as PDF" style="display:none;">🖨</button>
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <h2>Paste in your students' responses</h2>
+    <p class="sub">Forward each email here, or paste every downloaded/copied response — one after another. Anything that isn't a valid response line is ignored automatically.</p>
+    <textarea id="pasteBox" placeholder="Paste everything you collected here — full emails, one per line, whatever you have. Look for lines starting with [DATA] WINAI1|..."></textarea>
+    <div class="row">
+      <button class="btn primary" id="buildBtn">Build report →</button>
+      <button class="btn ghost" id="clearBtn">Clear</button>
+      <span class="parse-note" id="parseNote"></span>
+    </div>
+  </div>
+
+  <div id="report">
+    <div class="card">
+      <div class="report-title">Social Media &amp; Screen Time — Class Report</div>
+      <div class="report-date" id="reportDate"></div>
+      <div class="stat-grid">
+        <div class="stat screen"><div class="v" id="statN">0</div><div class="k">responses</div></div>
+        <div class="stat"><div class="v" id="statWantLess">0%</div><div class="k">want to use less</div></div>
+        <div class="stat"><div class="v" id="statHeavy">0%</div><div class="k">4+ hours a day</div></div>
+        <div class="stat human"><div class="v" id="statWinai">0.0</div><div class="k">avg. Winai interest /5</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Key takeaways</h2>
+      <p class="sub">Auto-generated from the data below — written up for the "conclusions" section of your report.</p>
+      <div class="conclusions" id="conclusions"></div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card"><h2>Class level</h2><p class="sub">Who answered</p><div class="bars" id="chartClass"></div></div>
+      <div class="card"><h2>Hours per day</h2><p class="sub">Typical daily use</p><div class="bars" id="chartHours"></div></div>
+      <div class="card"><h2>Platforms used</h2><p class="sub">% of respondents using each</p><div class="bars" id="chartPlatforms"></div></div>
+      <div class="card"><h2>Main device</h2><p class="sub">Where the time goes</p><div class="bars" id="chartDevice"></div></div>
+      <div class="card"><h2>Want to use it less?</h2><p class="sub">Self-reported</p><div class="bars" id="chartWantLess"></div></div>
+      <div class="card"><h2>Already tried</h2><p class="sub">Self-regulation strategies</p><div class="bars" id="chartActions"></div></div>
+      <div class="card"><h2>Reported impact</h2><p class="sub">Where it shows up</p><div class="bars" id="chartImpact"></div></div>
+      <div class="card"><h2>Winai interest (1–5)</h2><p class="sub">Would they use a lock-and-exercise app?</p><div class="bars" id="chartWinai"></div></div>
+    </div>
+
+    <div class="card no-print">
+      <h2>Want this as an actual Word document?</h2>
+      <div class="docx-note"><b>Tip:</b> print this page to PDF for a quick handout, or bring the same pasted responses back to Claude and ask for a polished .docx with charts and written conclusions — it can build that directly from this data.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var root = document.documentElement;
+  var stored = null;
+  try{ stored = localStorage.getItem('winai-survey-theme'); }catch(e){}
+  if(stored) root.setAttribute('data-theme', stored);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme');
+    var isDark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = isDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try{ localStorage.setItem('winai-survey-theme', next); }catch(e){}
+  });
+  document.getElementById('printBtn').addEventListener('click', function(){ window.print(); });
+
+  var PLATFORMS = {TT:"TikTok",IG:"Instagram",FB:"Facebook",YT:"YouTube",LN:"Line",SC:"Snapchat",TW:"Twitter / X",DC:"Discord",OT:"Other"};
+  var ACTIONS = {LIMIT:"App time limits",NOTIF:"Turned off notifications",DELETE:"Deleted an app for a while",AWAY:"Left phone in another room",TRACK:"Screen-time tracking app",NONE:"Haven't tried anything",OTH:"Something else"};
+  var IMPACTS = {GRADES:"Grades/homework",SLEEP:"Sleep",MOTIV:"Motivation",MOOD:"Mood",SOCIAL:"Time with family/friends",NONE:"None of these"};
+  var HOURS_ORDER = ["<1","1-2","2-4","4-6","6+"];
+  var HOURS_LABEL = {"<1":"< 1 hour","1-2":"1–2 hours","2-4":"2–4 hours","4-6":"4–6 hours","6+":"6+ hours"};
+  var DEVICE_LABEL = {PH:"Phone",TB:"Tablet",PC:"Computer"};
+  var WANT_LABEL = {Y:"Yes",U:"Not sure",N:"No"};
+  var CLASS_ORDER = ["M1","M2","M3","M4","M5","M6"];
+
+  function parseLines(raw){
+    var lines = raw.split(/\r?\n/);
+    var good = [], bad = 0;
+    lines.forEach(function(line){
+      var m = line.match(/WINAI1\|[^\s]+/);
+      if(!m) { if(line.trim().length && /\S/.test(line) && line.indexOf('WINAI1')>-1) bad++; return; }
+      var parts = m[0].split('|');
+      if(parts.length !== 9){ bad++; return; }
+      var rec = {
+        cls: parts[1], hours: parts[2],
+        platforms: parts[3] ? parts[3].split('+').filter(Boolean) : [],
+        device: parts[4], wantLess: parts[5],
+        actions: parts[6] ? parts[6].split('+').filter(Boolean) : [],
+        impacts: parts[7] ? parts[7].split('+').filter(Boolean) : [],
+        winai: parseInt(parts[8], 10)
+      };
+      if(!CLASS_ORDER.includes(rec.cls) || !HOURS_ORDER.includes(rec.hours) || isNaN(rec.winai)){ bad++; return; }
+      good.push(rec);
+    });
+    return {good:good, bad:bad};
+  }
+
+  function count(list, keyFn){
+    var m = {};
+    list.forEach(function(item){ var k = keyFn(item); m[k] = (m[k]||0)+1; });
+    return m;
+  }
+  function countMulti(list, arrFn){
+    var m = {};
+    list.forEach(function(item){ arrFn(item).forEach(function(v){ m[v]=(m[v]||0)+1; }); });
+    return m;
+  }
+
+  function renderBars(container, entries, total, opts){
+    opts = opts || {};
+    container.innerHTML = '';
+    var max = Math.max.apply(null, entries.map(function(e){return e[1];}).concat([1]));
+    entries.forEach(function(e){
+      var label = e[0], val = e[1];
+      var pct = total ? Math.round(val/total*100) : 0;
+      var widthPct = Math.round(val/max*100);
+      var row = document.createElement('div'); row.className='bar-row';
+      row.innerHTML =
+        '<div class="bar-label">'+label+'</div>' +
+        '<div class="bar-track"><div class="bar-fill" style="width:'+widthPct+'%; background:'+(opts.color||'var(--screen)')+'"></div></div>' +
+        '<div class="bar-value mono">'+(opts.showPct ? pct+'%' : val)+'</div>';
+      container.appendChild(row);
+    });
+    if(!entries.length){
+      container.innerHTML = '<p class="sub" style="margin:0;">No data yet.</p>';
+    }
+  }
+
+  function pct(n, total){ return total ? Math.round(n/total*100) : 0; }
+
+  function buildReport(records){
+    var N = records.length;
+    document.getElementById('statN').textContent = N;
+    document.getElementById('reportDate').textContent = 'Generated from ' + N + ' anonymous student response' + (N===1?'':'s');
+
+    var wantLessN = records.filter(function(r){return r.wantLess==='Y';}).length;
+    var heavyN = records.filter(function(r){return r.hours==='4-6' || r.hours==='6+';}).length;
+    var avgWinai = N ? (records.reduce(function(s,r){return s+r.winai;},0)/N) : 0;
+
+    document.getElementById('statWantLess').textContent = pct(wantLessN,N)+'%';
+    document.getElementById('statHeavy').textContent = pct(heavyN,N)+'%';
+    document.getElementById('statWinai').textContent = avgWinai.toFixed(1);
+
+    // class
+    var clsCount = count(records, function(r){return r.cls;});
+    renderBars(document.getElementById('chartClass'), CLASS_ORDER.filter(function(c){return clsCount[c];}).map(function(c){return [c, clsCount[c]];}), N, {color:'var(--screen)'});
+
+    // hours
+    var hoursCount = count(records, function(r){return r.hours;});
+    renderBars(document.getElementById('chartHours'), HOURS_ORDER.filter(function(h){return hoursCount[h];}).map(function(h){return [HOURS_LABEL[h], hoursCount[h]];}), N, {color:'var(--screen)'});
+
+    // platforms
+    var platCount = countMulti(records, function(r){return r.platforms;});
+    var platEntries = Object.keys(platCount).map(function(k){return [PLATFORMS[k]||k, platCount[k]];}).sort(function(a,b){return b[1]-a[1];});
+    renderBars(document.getElementById('chartPlatforms'), platEntries, N, {color:'var(--screen)', showPct:true});
+
+    // device
+    var devCount = count(records, function(r){return r.device;});
+    var devEntries = Object.keys(devCount).map(function(k){return [DEVICE_LABEL[k]||k, devCount[k]];}).sort(function(a,b){return b[1]-a[1];});
+    renderBars(document.getElementById('chartDevice'), devEntries, N, {color:'var(--screen)', showPct:true});
+
+    // want less
+    var wantCount = count(records, function(r){return r.wantLess;});
+    var wantEntries = ['Y','U','N'].filter(function(k){return wantCount[k];}).map(function(k){return [WANT_LABEL[k], wantCount[k]];});
+    renderBars(document.getElementById('chartWantLess'), wantEntries, N, {color:'var(--screen)', showPct:true});
+
+    // actions
+    var actCount = countMulti(records, function(r){return r.actions;});
+    var actEntries = Object.keys(actCount).map(function(k){return [ACTIONS[k]||k, actCount[k]];}).sort(function(a,b){return b[1]-a[1];});
+    renderBars(document.getElementById('chartActions'), actEntries, N, {color:'var(--human)', showPct:true});
+
+    // impacts
+    var impCount = countMulti(records, function(r){return r.impacts;});
+    var impEntries = Object.keys(impCount).map(function(k){return [IMPACTS[k]||k, impCount[k]];}).sort(function(a,b){return b[1]-a[1];});
+    renderBars(document.getElementById('chartImpact'), impEntries, N, {color:'var(--human)', showPct:true});
+
+    // winai scale
+    var winaiCount = count(records, function(r){return r.winai;});
+    var winaiEntries = [1,2,3,4,5].filter(function(k){return winaiCount[k];}).map(function(k){return [k+' / 5', winaiCount[k]];});
+    renderBars(document.getElementById('chartWinai'), winaiEntries, N, {color:'var(--human)', showPct:true});
+
+    // conclusions
+    var topPlatform = platEntries[0];
+    var topDevice = devEntries[0];
+    var topAction = actEntries.filter(function(e){return e[0]!=='Haven\'t tried anything';})[0];
+    var topImpact = impEntries.filter(function(e){return e[0]!=='None of these';})[0];
+    var noneTriedN = actCount['NONE']||0;
+
+    var lines = [];
+    lines.push({human:false, text: N + ' student' + (N===1?'':'s') + ' responded' + (N ? (', mostly using ' + (topDevice?topDevice[0].toLowerCase():'a phone') + ' (' + pct(topDevice?topDevice[1]:0,N) + '%).') : '.') });
+    if(topPlatform) lines.push({human:false, text: topPlatform[0] + ' is the most-used platform, named by ' + pct(topPlatform[1],N) + '% of respondents.'});
+    lines.push({human:false, text: pct(heavyN,N) + '% spend 4 or more hours a day on social media.'});
+    lines.push({human:false, text: pct(wantLessN,N) + '% say they want to use it less' + (wantCount['U'] ? (', and ' + pct(wantCount['U'],N) + '% more are unsure') : '') + '.'});
+    if(topAction) lines.push({human:true, text: 'Among those trying to cut back, "' + topAction[0].toLowerCase() + '" is the most common strategy' + (noneTriedN ? ('; ' + pct(noneTriedN,N) + '% haven\'t tried anything yet') : '') + '.'});
+    if(topImpact) lines.push({human:true, text: topImpact[0] + ' is the most commonly reported impact, affecting ' + pct(topImpact[1],N) + '% of respondents.'});
+    lines.push({human:true, text: 'Average interest in a lock-and-exercise app like Winai is ' + avgWinai.toFixed(1) + ' / 5 — ' + (avgWinai>=3.5?'strong interest overall.':avgWinai>=2.5?'mixed, worth piloting with volunteers.':'limited enthusiasm as described.')});
+
+    var box = document.getElementById('conclusions'); box.innerHTML = '';
+    lines.forEach(function(l){
+      var d = document.createElement('div'); d.className='conclusion'+(l.human?' human':'');
+      d.innerHTML = '<span class="dot"></span><span>'+l.text+'</span>';
+      box.appendChild(d);
+    });
+
+    document.getElementById('report').classList.add('show');
+    document.getElementById('printBtn').style.display = 'flex';
+  }
+
+  document.getElementById('buildBtn').addEventListener('click', function(){
+    var raw = document.getElementById('pasteBox').value;
+    var parsed = parseLines(raw);
+    var note = document.getElementById('parseNote');
+    if(!parsed.good.length){
+      note.textContent = 'No valid responses found yet — paste the full emails or [DATA] lines.';
+      note.className = 'parse-note warn';
+      return;
+    }
+    note.textContent = parsed.good.length + ' response' + (parsed.good.length===1?'':'s') + ' read' + (parsed.bad ? (', ' + parsed.bad + ' line' + (parsed.bad===1?'':'s') + ' skipped') : '') + '.';
+    note.className = 'parse-note';
+    buildReport(parsed.good);
+    document.getElementById('report').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', function(){
+    document.getElementById('pasteBox').value = '';
+    document.getElementById('parseNote').textContent = '';
+    document.getElementById('report').classList.remove('show');
+    document.getElementById('printBtn').style.display = 'none';
+  });
+})();
+</script>

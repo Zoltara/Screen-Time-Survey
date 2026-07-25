@@ -1,0 +1,975 @@
+<meta charset="utf-8">
+<title>Teacher Rambo's Social Media Survey</title>
+<style>
+  :root{
+    --bg:#0a0e1a; --bg-2:#0d1220;
+    --surface:#131829; --surface-2:#1a2036; --surface-hover:#1f2640;
+    --border:#262d47; --border-soft:#1d2338;
+    --text:#eef1fb; --text-dim:#98a0bd; --text-faint:#5b6386;
+    --screen:#5b8cff; --screen-soft:rgba(91,140,255,.14); --screen-dim:#3f66c9;
+    --human:#ff8a5c; --human-soft:rgba(255,138,92,.16); --human-dim:#d96f45;
+    --good:#4ade80;
+    --shadow: 0 24px 60px -24px rgba(0,0,0,.65);
+    --radius: 20px;
+    --accent: var(--screen);
+    --accent-soft: var(--screen-soft);
+    color-scheme: dark;
+  }
+  :root[data-theme="light"]{
+    --bg:#eef1f7; --bg-2:#e6eaf3;
+    --surface:#ffffff; --surface-2:#f7f9fd; --surface-hover:#eef1f9;
+    --border:#d7dceb; --border-soft:#e3e7f2;
+    --text:#161a26; --text-dim:#545b72; --text-faint:#8891a8;
+    --screen:#3163e0; --screen-soft:rgba(49,99,224,.10); --screen-dim:#2450b8;
+    --human:#d9642f; --human-soft:rgba(217,100,47,.12); --human-dim:#b6511f;
+    --good:#1f9d55;
+    --shadow: 0 24px 50px -28px rgba(30,40,70,.25);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#eef1f7; --bg-2:#e6eaf3;
+      --surface:#ffffff; --surface-2:#f7f9fd; --surface-hover:#eef1f9;
+      --border:#d7dceb; --border-soft:#e3e7f2;
+      --text:#161a26; --text-dim:#545b72; --text-faint:#8891a8;
+      --screen:#3163e0; --screen-soft:rgba(49,99,224,.10); --screen-dim:#2450b8;
+      --human:#d9642f; --human-soft:rgba(217,100,47,.12); --human-dim:#b6511f;
+      --good:#1f9d55;
+      --shadow: 0 24px 50px -28px rgba(30,40,70,.25);
+      color-scheme: light;
+    }
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(600px 420px at 12% -8%, var(--screen-soft), transparent 60%),
+      radial-gradient(560px 400px at 108% 22%, var(--human-soft), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Leelawadee UI", "Noto Sans Thai", Tahoma, Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding: 20px 16px 60px;
+  }
+  .mono{ font-family: "Cascadia Mono","Cascadia Code",Consolas,"SF Mono",monospace; font-variant-numeric: tabular-nums; }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    width:100%; max-width:560px;
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:18px; gap:10px;
+  }
+  .brand{ display:flex; align-items:center; gap:10px; min-width:0; }
+  .brand-mark{
+    width:34px;height:34px;border-radius:10px;
+    background:linear-gradient(135deg, var(--screen), var(--human));
+    display:flex;align-items:center;justify-content:center;
+    font-size:16px; flex:none;
+  }
+  .brand-text{ font-size:13px; color:var(--text-dim); line-height:1.25; min-width:0; }
+  .brand-text b{ color:var(--text); font-weight:700; }
+  .topbar-actions{ display:flex; align-items:center; gap:8px; flex:none; }
+  .lang-toggle{
+    display:flex; align-items:center; gap:2px;
+    border:1px solid var(--border); background:var(--surface);
+    border-radius:99px; padding:3px; flex:none;
+  }
+  .lang-btn{
+    appearance:none; border:none; background:transparent; color:var(--text-faint);
+    font-size:12px; font-weight:700; padding:6px 10px; border-radius:99px; cursor:pointer;
+    letter-spacing:.02em;
+  }
+  .lang-btn.active{ background:var(--accent); color:#08101f; }
+  .theme-toggle{
+    width:34px;height:34px;border-radius:50%;
+    border:1px solid var(--border); background:var(--surface);
+    color:var(--text-dim); cursor:pointer; display:flex; align-items:center; justify-content:center;
+    font-size:15px; flex:none;
+  }
+  .theme-toggle:hover{ color:var(--text); border-color: var(--text-faint); }
+
+  .progress-wrap{
+    width:100%; max-width:560px; margin-bottom:22px;
+  }
+  .progress-track{
+    height:6px; border-radius:99px; background:var(--surface-2);
+    border:1px solid var(--border-soft); overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; border-radius:99px;
+    background: linear-gradient(90deg, var(--screen), var(--human));
+    width:0%; transition: width .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .progress-label{
+    display:flex; justify-content:space-between; margin-top:8px;
+    font-size:11.5px; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--text-faint); font-weight:600;
+  }
+
+  /* ---------- card ---------- */
+  .stage{ width:100%; max-width:560px; position:relative; min-height:420px; }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 30px 26px 24px;
+    position:absolute; inset:0;
+    display:flex; flex-direction:column;
+    opacity:0; transform: translateY(14px) scale(.99);
+    pointer-events:none;
+    transition: opacity .38s ease, transform .38s cubic-bezier(.2,.8,.2,1);
+  }
+  .card.active{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; position:relative; }
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; transform:none; }
+  }
+
+  .eyebrow{
+    font-size:11.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color: var(--accent); margin:0 0 10px;
+  }
+  h1.q{ font-size:22px; line-height:1.32; margin:0 0 6px; font-weight:750; letter-spacing:-.01em; text-wrap:balance; }
+  p.help{ margin:0 0 20px; color:var(--text-dim); font-size:14.5px; line-height:1.55; }
+
+  .options{ display:flex; flex-direction:column; gap:10px; flex:1; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+
+  .chip{
+    appearance:none; border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text); border-radius:14px; padding:15px 16px;
+    font-size:15px; font-weight:600; text-align:left; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    transition: border-color .15s, background .15s, transform .1s;
+    min-height:52px;
+  }
+  .chip:hover{ background:var(--surface-hover); border-color:var(--text-faint); }
+  .chip:active{ transform: scale(.985); }
+  .chip .mark{
+    width:20px;height:20px;border-radius:6px;border:1.5px solid var(--text-faint);
+    flex:none; display:flex; align-items:center; justify-content:center; font-size:12px; color:transparent;
+  }
+  .chip.round .mark{ border-radius:50%; }
+  .chip.selected{ border-color: var(--accent); background: var(--accent-soft); }
+  .chip.selected .mark{ background:var(--accent); border-color:var(--accent); color:#0a0e1a; }
+  .chip .sub{ font-size:12px; font-weight:500; color:var(--text-faint); }
+  .chip.center{ justify-content:center; text-align:center; }
+
+  .btn-row{ display:flex; gap:10px; margin-top:22px; }
+  .btn{
+    appearance:none; border:none; border-radius:13px; padding:14px 18px;
+    font-size:15px; font-weight:700; cursor:pointer; flex:1;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition: filter .15s, transform .1s, opacity .15s;
+    text-decoration:none;
+  }
+  .btn:active{ transform: scale(.98); }
+  .btn.primary{ background: var(--accent); color:#08101f; }
+  .btn.primary:hover{ filter:brightness(1.08); }
+  .btn.primary:disabled{ opacity:.35; cursor:not-allowed; }
+  .btn.ghost{ background:transparent; color:var(--text-dim); border:1px solid var(--border); flex:0 0 auto; padding:14px 16px; }
+  .btn.ghost:hover{ color:var(--text); border-color:var(--text-faint); }
+  .btn.human{ background:var(--human); color:#1c0d05; }
+  .btn.human:hover{ filter:brightness(1.08); }
+
+  /* intro */
+  .intro-title{ font-size:26px; font-weight:800; letter-spacing:-.015em; line-height:1.28; margin:14px 0 10px; text-wrap:balance; }
+  .intro-lede{ color:var(--text-dim); font-size:15px; line-height:1.6; margin:0 0 22px; }
+  .meta-row{ display:flex; gap:10px; margin-bottom:22px; flex-wrap:wrap; }
+  .meta-pill{
+    font-size:12.5px; font-weight:600; color:var(--text-dim);
+    border:1px solid var(--border); background:var(--surface-2);
+    border-radius:99px; padding:7px 12px; display:flex; align-items:center; gap:6px;
+  }
+  .meta-pill b{ color:var(--text); }
+
+  /* winai section */
+  .winai-card{ background: linear-gradient(180deg, var(--human-soft), transparent 40%); }
+  .winai-carousel{
+    position:relative; width:100%; max-width:200px; aspect-ratio:9/16; margin:0 auto 16px;
+    border-radius:16px; overflow:hidden; border:1px solid var(--border); background:var(--surface-2);
+    box-shadow: var(--shadow);
+  }
+  .winai-carousel img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    opacity:0; transition:opacity .6s ease;
+  }
+  .winai-carousel img.active{ opacity:1; }
+  .winai-body{ font-size:14.5px; line-height:1.62; color:var(--text-dim); margin:0 0 6px; }
+  .winai-body b{ color:var(--text); }
+  .winai-steps{ display:flex; flex-direction:column; gap:8px; margin:14px 0 18px; }
+  .winai-step{ display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--text-dim); }
+  .winai-step .n{
+    flex:none; width:20px;height:20px;border-radius:50%; background:var(--human-soft); color:var(--human);
+    font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px;
+  }
+
+  .scale-row{ display:flex; gap:8px; }
+  .scale-btn{
+    flex:1; aspect-ratio:1; border-radius:14px; border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text); font-size:17px; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:border-color .15s, background .15s, transform .1s;
+  }
+  .scale-btn:hover{ border-color:var(--text-faint); }
+  .scale-btn.selected{ border-color:var(--human); background:var(--human-soft); color:var(--human); }
+  .scale-caps{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-faint); margin-top:8px; }
+
+  /* review */
+  .review-list{ display:flex; flex-direction:column; gap:10px; margin-bottom:6px; flex:1; overflow:auto; }
+  .review-item{
+    display:flex; justify-content:space-between; gap:12px; align-items:flex-start;
+    padding:11px 0; border-bottom:1px solid var(--border-soft); font-size:13.5px;
+  }
+  .review-item:last-child{ border-bottom:none; }
+  .review-k{ color:var(--text-faint); flex:0 0 42%; }
+  .review-v{ color:var(--text); font-weight:600; text-align:right; flex:1; }
+
+  .send-hint{ font-size:12.5px; color:var(--text-faint); text-align:center; margin-top:10px; }
+
+  .done-wrap{ text-align:center; padding:20px 6px; }
+  .done-img{ width:100%; max-width:280px; margin:0 auto 18px; display:block; border-radius:14px; }
+  .done-wrap h2{ font-size:20px; margin:0 0 8px; }
+  .done-wrap p{ color:var(--text-dim); font-size:14px; line-height:1.55; margin:0; }
+
+  ::selection{ background: var(--accent-soft); }
+  a{ color:inherit; }
+
+  /* ---------- report overlay ---------- */
+  .report-overlay{
+    position:fixed; inset:0; background:rgba(5,8,16,.72); backdrop-filter:blur(2px);
+    display:none; align-items:flex-start; justify-content:center; padding:24px 16px; z-index:50; overflow:auto;
+  }
+  .report-overlay.show{ display:flex; }
+  .report-panel{
+    width:100%; max-width:640px; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 20px 26px; margin:20px 0;
+  }
+  .report-topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .report-topbar .report-title{ font-size:17px; font-weight:800; }
+  .report-empty{ color:var(--text-dim); font-size:14px; text-align:center; padding:30px 10px; }
+  .report-stat-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:20px; }
+  .report-stat{ background:var(--surface-2); border:1px solid var(--border-soft); border-radius:12px; padding:12px 14px; }
+  .report-stat .v{ font-size:22px; font-weight:800; letter-spacing:-.02em; }
+  .report-stat .v.human{ color:var(--human); }
+  .report-stat .k{ font-size:11.5px; color:var(--text-dim); margin-top:2px; }
+  .report-section{ margin-bottom:20px; }
+  .report-section h3{ font-size:12.5px; margin:0 0 10px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em; }
+  .report-bar-row{ display:grid; grid-template-columns:112px 1fr 34px; align-items:center; gap:8px; margin-bottom:7px; }
+  .report-bar-label{ font-size:11.5px; color:var(--text-dim); text-align:right; line-height:1.25; }
+  .report-bar-track{ height:12px; border-radius:6px; background:var(--surface-2); border:1px solid var(--border-soft); overflow:hidden; }
+  .report-bar-fill{ height:100%; border-radius:6px; }
+  .report-bar-value{ font-size:11px; color:var(--text-faint); font-weight:700; text-align:right; }
+  .report-conclusions{ display:flex; flex-direction:column; gap:8px; }
+  .report-conclusion{ font-size:13px; line-height:1.5; background:var(--surface-2); border:1px solid var(--border-soft); border-radius:10px; padding:10px 12px; }
+</style>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">📱</div>
+    <div class="brand-text" id="brandText"></div>
+  </div>
+  <div class="topbar-actions">
+    <button class="theme-toggle" id="reportToggle" title="Build report" aria-label="Build report">📊</button>
+    <div class="lang-toggle">
+      <button class="lang-btn" id="langEN" type="button">EN</button>
+      <button class="lang-btn" id="langTH" type="button">ไทย</button>
+    </div>
+    <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle light/dark theme">◐</button>
+  </div>
+</div>
+
+<div class="report-overlay" id="reportOverlay">
+  <div class="report-panel">
+    <div class="report-topbar">
+      <div class="report-title" id="reportTitle">Class Report</div>
+      <button class="theme-toggle" id="reportClose" aria-label="Close">✕</button>
+    </div>
+    <div id="reportBody"></div>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progressWrap" style="display:none;">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label"><span id="progressText"></span><span id="progressPct">0%</span></div>
+</div>
+
+<div class="stage" id="stage"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- config ---------------- */
+  // Paste the Google Apps Script Web App /exec URL here after deploying (see apps-script/Code.gs).
+  var CONFIG = {
+    SHEETS_WEBAPP_URL: 'https://script.google.com/macros/s/AKfycbx0SFWFNxtSkWpLYwORQ0nGlEyr4PZTg0TiPAhAe-8qtChLzQwOMJZBBKRpVi6v0Tzg/exec',
+    REPORT_PASSWORD: 'report'
+  };
+
+  /* ---------------- theme ---------------- */
+  var root = document.documentElement;
+  var storedTheme = null;
+  try{ storedTheme = localStorage.getItem('winai-survey-theme'); }catch(e){}
+  if(storedTheme) root.setAttribute('data-theme', storedTheme);
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    var cur = root.getAttribute('data-theme');
+    var isDark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    var next = isDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try{ localStorage.setItem('winai-survey-theme', next); }catch(e){}
+  });
+
+  /* ---------------- language ---------------- */
+  var LANG = 'en';
+  try{ LANG = localStorage.getItem('winai-survey-lang') || 'en'; }catch(e){}
+
+  var S = {
+    en: {
+      brandLine1:"Teacher Rambo's", brandLine2:"Social Media Survey",
+      stepOf: function(n){ return 'Step '+n+' of 10'; },
+      introEyebrow:"School Research · Anonymous",
+      introTitle:"A quick survey about Screen Time",
+      introLede:"Anonymous, takes less than 5 minutes",
+      metaTime:"~4 min", metaAnon:"Fully anonymous", metaQs:"10 quick questions",
+      start:"Start the survey",
+      s1Eyebrow:"About you", s1Q:"What is your class level?", s1Help:"",
+      s2Eyebrow:"Daily usage", s2Q:"How many hours a day do you spend on social media?", s2Help:"Your best honest guess for a typical day.",
+      hours:{"<1":"Less than 1 hour","1-2":"1–2 hours","2-4":"2–4 hours","4-6":"4–6 hours","6+":"6+ hours"},
+      s3Eyebrow:"Platforms", s3Q:"Which social media do you use regularly?", s3Help:"Tap all that apply.",
+      platforms:{TT:"TikTok",IG:"Instagram",FB:"Facebook",YT:"YouTube",LN:"Line",SC:"Snapchat",TW:"Twitter / X",DC:"Discord",OT:"Other"},
+      s4Eyebrow:"Device", s4Q:"Which device do you use the most for it?",
+      device:{PT:"📱 Phone / Tablet",PC:"💻 Computer / laptop"},
+      s4QOS:"Is it Android or iOS?",
+      os:{AND:"Android",IOS:"iOS"},
+      s5Eyebrow:"Honestly", s5Q:"Do you want to use social media less?",
+      wantLess:{Y:"Yes",U:"Not sure",N:"No, I'm happy with it"},
+      s6Eyebrow:"Been there?", s6Q:"What have you already tried, if anything?", s6Help:"Tap all that apply.",
+      actions:{LIMIT:"Set app time limits",NOTIF:"Turned off notifications",DELETE:"Deleted / uninstalled an app for a while",AWAY:"Left my phone in another room",TRACK:"Used a screen-time tracking app",NONE:"Haven't tried anything",OTH:"Something else"},
+      s7Eyebrow:"Real talk", s7Q:"Has social media affected any of these?", s7Help:"Tap all that apply — this stays anonymous.",
+      impacts:{GRADES:"My grades or homework",SLEEP:"My sleep",MOTIV:"My motivation",MOOD:"My mood",SOCIAL:"Time with family/friends in person",NONE:"None of these"},
+      s8Eyebrow:"Movement", s8Q:"How physically active are you during the day?", s8Help:"Pick what fits best.",
+      activity:{NONE:"Not active — mostly sitting",LIGHT:"A little active — some walking",MOD:"Moderately active — regular movement",HIGH:"Very active — sports or exercise most days"},
+      s9Eyebrow:"One more thing", s9Q:"Meet Winai (วินัย) — an app that locks social media until you move.",
+      winaiBodyLead:"The idea:", winaiBody:"after a set amount of time on social media, Winai locks TikTok, Instagram, and the rest — until you finish a short exercise it watches and counts for you.",
+      winaiSteps:["You scroll for your allowed time.","Winai locks the apps automatically.","Do push-ups, squats, or another exercise — Winai counts your reps.","Finish the set and your apps unlock again."],
+      winaiScaleQ:"How likely would you be to actually use an app like this?",
+      scaleLo:"Definitely not", scaleHi:"Definitely yes",
+      s10Eyebrow:"Last step", s10Q:"Review & send", s10Help:"Nothing identifying is included — just this summary.",
+      rClass:"Class", rHours:"Hours/day", rPlatforms:"Platforms", rDevice:"Main device", rOS:"Operating system", rWantLess:"Wants to use less",
+      rActions:"Already tried", rImpacts:"Affected areas", rActivity:"Physical activity", rWinai:"Winai interest",
+      sendBtn:"Send my answers", sendingBtn:"Sending…",
+      doneTitle:"Thanks for the honest answers.",
+      doneBody:"Your response is anonymous and will be used for a research report.",
+      reportBtn:"Build report", reportPwPrompt:"Enter the teacher password to build the class report:", reportPwWrong:"Wrong password.",
+      reportLoading:"Loading responses…", reportError:"Couldn't load responses. Check the connection and try again.",
+      reportTitle:"Class Report", reportEmpty:"No responses yet.",
+      reportN:"responses", reportWantLess:"want to use less", reportHeavy:"4+ hours a day", reportWinaiAvg:"avg. Winai interest /5",
+      reportSecClass:"Class level", reportSecHours:"Hours per day", reportSecPlatforms:"Platforms used", reportSecDevice:"Main device",
+      reportSecOS:"OS (phone/tablet)", reportSecWantLess:"Want to use it less?", reportSecActions:"Already tried",
+      reportSecImpacts:"Reported impact", reportSecActivity:"Physical activity", reportSecWinai:"Winai interest (1–5)",
+      reportSecConclusions:"Key takeaways",
+      back:"Back", next:"Next"
+    },
+    th: {
+      brandLine1:"ครูแรมโบ้", brandLine2:"แบบสำรวจโซเชียลมีเดีย",
+      stepOf: function(n){ return 'ขั้นตอนที่ '+n+' จาก 10'; },
+      introEyebrow:"งานวิจัยในโรงเรียน · ไม่ระบุตัวตน",
+      introTitle:"แบบสำรวจสั้น ๆ เกี่ยวกับเวลาหน้าจอ",
+      introLede:"ไม่ระบุตัวตน ใช้เวลาไม่ถึง 5 นาที",
+      metaTime:"~4 นาที", metaAnon:"ไม่ระบุตัวตน 100%", metaQs:"10 คำถามสั้น ๆ",
+      start:"เริ่มทำแบบสำรวจ",
+      s1Eyebrow:"เกี่ยวกับคุณ", s1Q:"คุณเรียนอยู่ชั้นอะไร?", s1Help:"",
+      s2Eyebrow:"การใช้งานต่อวัน", s2Q:"คุณใช้โซเชียลมีเดียวันละกี่ชั่วโมง?", s2Help:"ตอบตามจริงเท่าที่คุณคิดว่าใกล้เคียงที่สุด",
+      hours:{"<1":"น้อยกว่า 1 ชั่วโมง","1-2":"1–2 ชั่วโมง","2-4":"2–4 ชั่วโมง","4-6":"4–6 ชั่วโมง","6+":"6 ชั่วโมงขึ้นไป"},
+      s3Eyebrow:"แพลตฟอร์ม", s3Q:"คุณใช้โซเชียลมีเดียตัวไหนเป็นประจำ?", s3Help:"แตะเลือกได้มากกว่า 1 ข้อ",
+      platforms:{TT:"TikTok",IG:"Instagram",FB:"Facebook",YT:"YouTube",LN:"Line",SC:"Snapchat",TW:"Twitter / X",DC:"Discord",OT:"อื่น ๆ"},
+      s4Eyebrow:"อุปกรณ์", s4Q:"คุณใช้อุปกรณ์ไหนมากที่สุด?",
+      device:{PT:"📱 มือถือ / แท็บเล็ต",PC:"💻 คอมพิวเตอร์ / โน้ตบุ๊ก"},
+      s4QOS:"เป็น Android หรือ iOS?",
+      os:{AND:"Android",IOS:"iOS"},
+      s5Eyebrow:"ตอบตามจริง", s5Q:"คุณอยากใช้โซเชียลมีเดียให้น้อยลงไหม?",
+      wantLess:{Y:"อยาก",U:"ไม่แน่ใจ",N:"ไม่อยาก พอใจแบบนี้ดีอยู่แล้ว"},
+      s6Eyebrow:"เคยลองไหม?", s6Q:"ที่ผ่านมาคุณเคยลองทำอะไรบ้าง?", s6Help:"แตะเลือกได้มากกว่า 1 ข้อ",
+      actions:{LIMIT:"ตั้งเวลาจำกัดการใช้แอป",NOTIF:"ปิดการแจ้งเตือน",DELETE:"ลบแอปออกไปพักหนึ่ง",AWAY:"วางมือถือไว้อีกห้อง",TRACK:"ใช้แอปติดตามเวลาหน้าจอ",NONE:"ยังไม่เคยลองทำอะไรเลย",OTH:"อย่างอื่น"},
+      s7Eyebrow:"พูดตรง ๆ", s7Q:"โซเชียลมีเดียส่งผลกับเรื่องเหล่านี้ไหม?", s7Help:"แตะเลือกได้มากกว่า 1 ข้อ ข้อมูลนี้ไม่ระบุตัวตน",
+      impacts:{GRADES:"การเรียนหรือการบ้าน",SLEEP:"การนอน",MOTIV:"แรงจูงใจ",MOOD:"อารมณ์",SOCIAL:"เวลาที่ได้อยู่กับครอบครัว/เพื่อนตัวจริง",NONE:"ไม่มีข้อไหนเลย"},
+      s8Eyebrow:"การเคลื่อนไหว", s8Q:"ในแต่ละวันคุณเคลื่อนไหวร่างกายมากแค่ไหน?", s8Help:"เลือกข้อที่ตรงที่สุด",
+      activity:{NONE:"ไม่ค่อยเคลื่อนไหว — นั่งเป็นส่วนใหญ่",LIGHT:"เคลื่อนไหวเล็กน้อย — เดินบ้าง",MOD:"เคลื่อนไหวปานกลาง — ขยับตัวสม่ำเสมอ",HIGH:"เคลื่อนไหวมาก — เล่นกีฬาหรือออกกำลังกายเกือบทุกวัน"},
+      s9Eyebrow:"อีกเรื่องหนึ่ง", s9Q:"รู้จัก Winai (วินัย) แอปที่ล็อกโซเชียลมีเดียจนกว่าคุณจะออกกำลังกาย",
+      winaiBodyLead:"แนวคิดคือ:", winaiBody:"เมื่อใช้โซเชียลมีเดียครบเวลาที่ตั้งไว้ Winai จะล็อก TikTok, Instagram และแอปอื่น ๆ จนกว่าคุณจะออกกำลังกายสั้น ๆ ให้ครบ โดยแอปจะนับจำนวนครั้งให้เอง",
+      winaiSteps:["เล่นโซเชียลมีเดียตามเวลาที่กำหนด","Winai จะล็อกแอปโดยอัตโนมัติ","ทำวิดพื้น สควอท หรือท่าอื่น ๆ — Winai นับจำนวนครั้งให้","ทำครบเซตแล้วแอปจะปลดล็อกอีกครั้ง"],
+      winaiScaleQ:"คุณคิดว่าจะใช้แอปแบบนี้จริงไหม?",
+      scaleLo:"ไม่ใช้แน่นอน", scaleHi:"ใช้แน่นอน",
+      s10Eyebrow:"ขั้นตอนสุดท้าย", s10Q:"ตรวจทานแล้วส่ง", s10Help:"ไม่มีข้อมูลระบุตัวตน มีแค่สรุปนี้เท่านั้น",
+      rClass:"ชั้น", rHours:"ชม./วัน", rPlatforms:"แพลตฟอร์ม", rDevice:"อุปกรณ์หลัก", rOS:"ระบบปฏิบัติการ", rWantLess:"อยากใช้น้อยลง",
+      rActions:"เคยลองทำ", rImpacts:"ผลกระทบ", rActivity:"การเคลื่อนไหวร่างกาย", rWinai:"ความสนใจ Winai",
+      sendBtn:"ส่งคำตอบของฉัน", sendingBtn:"กำลังส่ง…",
+      doneTitle:"ขอบคุณสำหรับคำตอบที่ตรงไปตรงมา",
+      doneBody:"คำตอบของคุณไม่ระบุตัวตน และจะถูกนำไปใช้ทำรายงานวิจัย",
+      reportBtn:"สร้างรายงาน", reportPwPrompt:"กรอกรหัสผ่านของครูเพื่อสร้างรายงานของห้อง:", reportPwWrong:"รหัสผ่านไม่ถูกต้อง",
+      reportLoading:"กำลังโหลดคำตอบ…", reportError:"โหลดคำตอบไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่อแล้วลองใหม่",
+      reportTitle:"รายงานของห้อง", reportEmpty:"ยังไม่มีคำตอบ",
+      reportN:"คำตอบ", reportWantLess:"อยากใช้น้อยลง", reportHeavy:"ใช้ 4 ชม.+ ต่อวัน", reportWinaiAvg:"ความสนใจ Winai เฉลี่ย /5",
+      reportSecClass:"ระดับชั้น", reportSecHours:"ชั่วโมงต่อวัน", reportSecPlatforms:"แพลตฟอร์มที่ใช้", reportSecDevice:"อุปกรณ์หลัก",
+      reportSecOS:"ระบบปฏิบัติการ (มือถือ/แท็บเล็ต)", reportSecWantLess:"อยากใช้น้อยลงไหม?", reportSecActions:"เคยลองทำ",
+      reportSecImpacts:"ผลกระทบที่พบ", reportSecActivity:"การเคลื่อนไหวร่างกาย", reportSecWinai:"ความสนใจ Winai (1–5)",
+      reportSecConclusions:"สรุปประเด็นสำคัญ",
+      back:"กลับ", next:"ถัดไป"
+    }
+  };
+  function t(key){ return S[LANG][key]; }
+
+  function updateLangUI(){
+    document.getElementById('langEN').classList.toggle('active', LANG==='en');
+    document.getElementById('langTH').classList.toggle('active', LANG==='th');
+    document.getElementById('brandText').innerHTML = '<b>'+t('brandLine1')+'</b><br>'+t('brandLine2');
+    document.documentElement.lang = LANG;
+  }
+  function setLang(l){
+    LANG = l;
+    try{ localStorage.setItem('winai-survey-lang', l); }catch(e){}
+    updateLangUI();
+    render(current);
+    if(cardEls[current]) cardEls[current].classList.add('active');
+  }
+  document.getElementById('langEN').addEventListener('click', function(){ setLang('en'); });
+  document.getElementById('langTH').addEventListener('click', function(){ setLang('th'); });
+
+  /* ---------------- data ---------------- */
+  var PLATFORM_CODES = ["TT","IG","FB","YT","LN","SC","TW","DC","OT"];
+  var ACTION_CODES = ["LIMIT","NOTIF","DELETE","AWAY","TRACK","NONE","OTH"];
+  var IMPACT_CODES = ["GRADES","SLEEP","MOTIV","MOOD","SOCIAL","NONE"];
+  var HOURS_CODES = ["<1","1-2","2-4","4-6","6+"];
+  var ACTIVITY_CODES = ["NONE","LIGHT","MOD","HIGH"];
+  var CLASSES = ["M1","M2","M3","M4","M5","M6"];
+  var DEVICE_CODES = ["PT","PC"];
+  var WANT_CODES = ["Y","U","N"];
+
+  var state = {
+    cls:null, hours:null, platforms:[], device:null, os:null, wantLess:null,
+    actions:[], impacts:[], activity:null, winai:null
+  };
+
+  function chip(html, selected, onClick, opts){
+    opts = opts||{};
+    var b = document.createElement('button');
+    b.type='button';
+    b.className = 'chip' + (opts.round?' round':'') + (opts.center?' center':'') + (selected?' selected':'');
+    var mark = opts.center ? '' : '<span class="mark">'+(selected?'✓':'')+'</span>';
+    b.innerHTML = '<span>'+html+'</span>' + mark;
+    b.addEventListener('click', onClick);
+    return b;
+  }
+
+  function renderSingle(container, codes, dict, current, onPick, opts){
+    codes.forEach(function(code){
+      container.appendChild(chip(dict[code], current===code, function(){ onPick(code); }, opts));
+    });
+  }
+  function renderMulti(container, codes, dict, currentArr, onToggle){
+    codes.forEach(function(code){
+      var sel = currentArr.indexOf(code) > -1;
+      container.appendChild(chip(dict[code], sel, function(){ onToggle(code); }));
+    });
+  }
+
+  function toggleMulti(arr, val, exclusiveNone){
+    var i = arr.indexOf(val);
+    if(exclusiveNone && val === 'NONE'){
+      arr.length = 0;
+      if(i === -1) arr.push('NONE');
+      return arr;
+    }
+    if(exclusiveNone){
+      var noneIdx = arr.indexOf('NONE');
+      if(noneIdx > -1) arr.splice(noneIdx,1);
+    }
+    if(i>-1) arr.splice(i,1); else arr.push(val);
+    return arr;
+  }
+
+  var SCREENSHOTS = [
+    'images/screenshots/1-squat-mock.jpg',
+    'images/screenshots/2-home-mock.jpg',
+    'images/screenshots/3-lock-mock.jpg',
+    'images/screenshots/4-pushup-mock.jpg',
+    'images/screenshots/5-curls-mock.jpg',
+    'images/screenshots/6-progress-mock.jpg',
+    'images/screenshots/7-history-mock.jpg',
+    'images/screenshots/8-badges-mock.jpg'
+  ];
+  var carouselTimer = null;
+  function stopCarousel(){
+    if(carouselTimer){ clearInterval(carouselTimer); carouselTimer = null; }
+  }
+  function startCarousel(container){
+    stopCarousel();
+    container.innerHTML = '';
+    var imgs = SCREENSHOTS.map(function(src, i){
+      var img = document.createElement('img');
+      img.src = src; img.alt = '';
+      if(i===0) img.className = 'active';
+      container.appendChild(img);
+      return img;
+    });
+    var idx = 0;
+    carouselTimer = setInterval(function(){
+      imgs[idx].classList.remove('active');
+      idx = (idx + 1) % imgs.length;
+      imgs[idx].classList.add('active');
+    }, 2000);
+  }
+
+  var steps = [];
+
+  // 0. intro
+  steps.push({
+    key:'intro', progress:false,
+    render:function(body){
+      body.innerHTML =
+        '<div class="eyebrow">'+t('introEyebrow')+'</div>' +
+        '<div class="intro-title">'+t('introTitle')+'</div>' +
+        '<p class="intro-lede">'+t('introLede')+'</p>' +
+        '<div class="meta-row">' +
+          '<div class="meta-pill">⏱ <b>'+t('metaTime')+'</b></div>' +
+          '<div class="meta-pill">🙈 <b>'+t('metaAnon')+'</b></div>' +
+          '<div class="meta-pill">📊 <b>'+t('metaQs')+'</b></div>' +
+        '</div>';
+      var btnRow = document.createElement('div');
+      btnRow.className = 'btn-row';
+      var start = document.createElement('button');
+      start.className = 'btn primary'; start.textContent = t('start');
+      start.addEventListener('click', function(){ goTo(1); });
+      btnRow.appendChild(start);
+      body.appendChild(btnRow);
+    }
+  });
+
+  // 1. class
+  steps.push({
+    key:'cls', title:function(){return t('stepOf')(1);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s1Eyebrow')+'</div><h1 class="q">'+t('s1Q')+'</h1>';
+      var opts = document.createElement('div'); opts.className='options grid3';
+      CLASSES.forEach(function(c){
+        opts.appendChild(chip(c, state.cls===c, function(){ state.cls=c; refreshBody(); }, {center:true, round:true}));
+      });
+      body.appendChild(opts);
+      addNav(body, {back:0, canNext:function(){return !!state.cls;}, next:2});
+    }
+  });
+
+  // 2. hours
+  steps.push({
+    key:'hours', title:function(){return t('stepOf')(2);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s2Eyebrow')+'</div><h1 class="q">'+t('s2Q')+'</h1><p class="help">'+t('s2Help')+'</p>';
+      var opts = document.createElement('div'); opts.className='options';
+      renderSingle(opts, HOURS_CODES, t('hours'), state.hours, function(v){ state.hours=v; refreshBody(); });
+      body.appendChild(opts);
+      addNav(body, {back:1, canNext:function(){return !!state.hours;}, next:3});
+    }
+  });
+
+  // 3. platforms
+  steps.push({
+    key:'platforms', title:function(){return t('stepOf')(3);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s3Eyebrow')+'</div><h1 class="q">'+t('s3Q')+'</h1><p class="help">'+t('s3Help')+'</p>';
+      var opts = document.createElement('div'); opts.className='options grid2';
+      renderMulti(opts, PLATFORM_CODES, t('platforms'), state.platforms, function(v){ toggleMulti(state.platforms, v); refreshBody(); });
+      body.appendChild(opts);
+      addNav(body, {back:2, canNext:function(){return state.platforms.length>0;}, next:4});
+    }
+  });
+
+  // 4. device
+  steps.push({
+    key:'device', title:function(){return t('stepOf')(4);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s4Eyebrow')+'</div><h1 class="q">'+t('s4Q')+'</h1>';
+      var opts = document.createElement('div'); opts.className='options';
+      renderSingle(opts, ["PT","PC"], t('device'), state.device, function(v){ state.device=v; if(v!=='PT'){ state.os=null; } refreshBody(); });
+      body.appendChild(opts);
+      if(state.device==='PT'){
+        var osHelp = document.createElement('p'); osHelp.className='help'; osHelp.style.marginTop='14px'; osHelp.textContent = t('s4QOS');
+        body.appendChild(osHelp);
+        var osOpts = document.createElement('div'); osOpts.className='options';
+        renderSingle(osOpts, ["AND","IOS"], t('os'), state.os, function(v){ state.os=v; refreshBody(); });
+        body.appendChild(osOpts);
+      }
+      addNav(body, {back:3, canNext:function(){return !!state.device && (state.device!=='PT' || !!state.os);}, next:5});
+    }
+  });
+
+  // 5. want less
+  steps.push({
+    key:'wantLess', title:function(){return t('stepOf')(5);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s5Eyebrow')+'</div><h1 class="q">'+t('s5Q')+'</h1>';
+      var opts = document.createElement('div'); opts.className='options';
+      renderSingle(opts, ["Y","U","N"], t('wantLess'), state.wantLess, function(v){ state.wantLess=v; refreshBody(); });
+      body.appendChild(opts);
+      addNav(body, {back:4, canNext:function(){return !!state.wantLess;}, next:6});
+    }
+  });
+
+  // 6. actions
+  steps.push({
+    key:'actions', title:function(){return t('stepOf')(6);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s6Eyebrow')+'</div><h1 class="q">'+t('s6Q')+'</h1><p class="help">'+t('s6Help')+'</p>';
+      var opts = document.createElement('div'); opts.className='options';
+      renderMulti(opts, ACTION_CODES, t('actions'), state.actions, function(v){ toggleMulti(state.actions, v, true); refreshBody(); });
+      body.appendChild(opts);
+      addNav(body, {back:5, canNext:function(){return state.actions.length>0;}, next:7});
+    }
+  });
+
+  // 7. impacts
+  steps.push({
+    key:'impacts', title:function(){return t('stepOf')(7);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s7Eyebrow')+'</div><h1 class="q">'+t('s7Q')+'</h1><p class="help">'+t('s7Help')+'</p>';
+      var opts = document.createElement('div'); opts.className='options';
+      renderMulti(opts, IMPACT_CODES, t('impacts'), state.impacts, function(v){ toggleMulti(state.impacts, v, true); refreshBody(); });
+      body.appendChild(opts);
+      addNav(body, {back:6, canNext:function(){return state.impacts.length>0;}, next:8});
+    }
+  });
+
+  // 8. physical activity
+  steps.push({
+    key:'activity', title:function(){return t('stepOf')(8);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s8Eyebrow')+'</div><h1 class="q">'+t('s8Q')+'</h1><p class="help">'+t('s8Help')+'</p>';
+      var opts = document.createElement('div'); opts.className='options';
+      renderSingle(opts, ACTIVITY_CODES, t('activity'), state.activity, function(v){ state.activity=v; refreshBody(); });
+      body.appendChild(opts);
+      addNav(body, {back:7, canNext:function(){return !!state.activity;}, next:9});
+    }
+  });
+
+  // 9. winai concept
+  steps.push({
+    key:'winai', title:function(){return t('stepOf')(9);},
+    render:function(body){
+      body.parentElement.classList.add('winai-card');
+      body.innerHTML =
+        '<div class="eyebrow" style="color:var(--human)">'+t('s9Eyebrow')+'</div>' +
+        '<h1 class="q">'+t('s9Q')+'</h1>' +
+        '<div class="winai-carousel" id="winaiCarousel"></div>' +
+        '<p class="winai-body"><b>'+t('winaiBodyLead')+'</b> '+t('winaiBody')+'</p>' +
+        '<div class="winai-steps">' +
+          t('winaiSteps').map(function(s,i){ return '<div class="winai-step"><span class="n">'+(i+1)+'</span>'+s+'</div>'; }).join('') +
+        '</div>' +
+        '<p class="help" style="margin:0 0 10px;">'+t('winaiScaleQ')+'</p>';
+      startCarousel(body.querySelector('#winaiCarousel'));
+      var scale = document.createElement('div'); scale.className='scale-row';
+      for(var i=1;i<=5;i++){(function(i){
+        var b = document.createElement('button'); b.type='button';
+        b.className='scale-btn'+(state.winai===i?' selected':''); b.textContent=i;
+        b.addEventListener('click', function(){ state.winai=i; refreshBody(); });
+        scale.appendChild(b);
+      })(i);}
+      body.appendChild(scale);
+      var caps = document.createElement('div'); caps.className='scale-caps';
+      caps.innerHTML = '<span>'+t('scaleLo')+'</span><span>'+t('scaleHi')+'</span>';
+      body.appendChild(caps);
+      addNav(body, {back:8, canNext:function(){return !!state.winai;}, next:10});
+    }
+  });
+
+  // 10. review + send
+  steps.push({
+    key:'review', title:function(){return t('stepOf')(10);},
+    render:function(body){
+      body.innerHTML = '<div class="eyebrow">'+t('s10Eyebrow')+'</div><h1 class="q">'+t('s10Q')+'</h1><p class="help">'+t('s10Help')+'</p>';
+      var list = document.createElement('div'); list.className='review-list';
+      function row(k,v){
+        var d=document.createElement('div'); d.className='review-item';
+        d.innerHTML = '<span class="review-k">'+k+'</span><span class="review-v">'+v+'</span>';
+        list.appendChild(d);
+      }
+      row(t('rClass'), state.cls);
+      row(t('rHours'), t('hours')[state.hours]);
+      row(t('rPlatforms'), state.platforms.map(function(v){return t('platforms')[v];}).join(', '));
+      row(t('rDevice'), t('device')[state.device] + (state.os ? ' — ' + t('os')[state.os] : ''));
+      row(t('rWantLess'), t('wantLess')[state.wantLess]);
+      row(t('rActions'), state.actions.map(function(v){return t('actions')[v];}).join(', '));
+      row(t('rImpacts'), state.impacts.map(function(v){return t('impacts')[v];}).join(', '));
+      row(t('rActivity'), t('activity')[state.activity]);
+      row(t('rWinai'), state.winai + ' / 5');
+      body.appendChild(list);
+
+      var btnRow = document.createElement('div'); btnRow.className='btn-row';
+      var back = document.createElement('button'); back.className='btn ghost'; back.textContent=t('back');
+      back.addEventListener('click', function(){ goTo(9); });
+      btnRow.appendChild(back);
+
+      var send = document.createElement('button');
+      send.type='button'; send.className='btn primary'; send.textContent = t('sendBtn');
+      send.addEventListener('click', function(){
+        send.disabled = true; send.textContent = t('sendingBtn');
+        submitResponse().then(function(){ goTo(11); });
+      });
+      btnRow.appendChild(send);
+      body.appendChild(btnRow);
+    }
+  });
+
+  // 11. done
+  steps.push({
+    key:'done', progress:false,
+    render:function(body){
+      body.innerHTML =
+        '<div class="done-wrap">' +
+          '<img class="done-img" src="images/Rambo3.1.png" alt="">' +
+          '<h2>'+t('doneTitle')+'</h2>' +
+          '<p>'+t('doneBody')+'</p>' +
+        '</div>';
+    }
+  });
+
+  function buildPayload(){
+    return {
+      cls: state.cls, hours: state.hours, platforms: state.platforms,
+      device: state.device, os: state.os || '', wantLess: state.wantLess,
+      actions: state.actions, impacts: state.impacts, activity: state.activity,
+      winai: state.winai
+    };
+  }
+
+  function submitResponse(){
+    if(!CONFIG.SHEETS_WEBAPP_URL || CONFIG.SHEETS_WEBAPP_URL.indexOf('PASTE_') === 0){
+      return Promise.resolve();
+    }
+    return fetch(CONFIG.SHEETS_WEBAPP_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify(buildPayload())
+    }).catch(function(){ /* best-effort: still let the student finish */ });
+  }
+
+  /* ---------------- nav / render engine ---------------- */
+  function addNav(body, opts){
+    var row = document.createElement('div'); row.className='btn-row';
+    if(opts.back !== undefined){
+      var back = document.createElement('button'); back.className='btn ghost'; back.textContent=t('back');
+      back.addEventListener('click', function(){ goTo(opts.back); });
+      row.appendChild(back);
+    }
+    var next = document.createElement('button'); next.className='btn primary'; next.textContent=t('next');
+    next.disabled = !opts.canNext();
+    next.addEventListener('click', function(){ goTo(opts.next); });
+    row.appendChild(next);
+    body.appendChild(row);
+  }
+
+  var current = 0;
+  var stage = document.getElementById('stage');
+  var cardEls = {};
+
+  function ensureCard(i){
+    if(cardEls[i]) return cardEls[i];
+    var card = document.createElement('div'); card.className='card';
+    stage.appendChild(card);
+    cardEls[i] = card;
+    return card;
+  }
+
+  function refreshBody(){ render(current); if(cardEls[current]) cardEls[current].classList.add('active'); }
+
+  function render(i){
+    var card = ensureCard(i);
+    var wasActive = card.classList.contains('active');
+    card.className = 'card' + (steps[i].key==='winai' ? ' winai-card' : '') + (wasActive ? ' active' : '');
+    card.innerHTML = '';
+    steps[i].render(card);
+    updateProgress(i);
+  }
+
+  function updateProgress(i){
+    var step = steps[i];
+    var wrap = document.getElementById('progressWrap');
+    if(step.progress === false){ wrap.style.display='none'; return; }
+    wrap.style.display='block';
+    var total = 10;
+    var n = i;
+    var pct = Math.round((n/total)*100);
+    document.getElementById('progressFill').style.width = pct+'%';
+    document.getElementById('progressText').textContent = step.title();
+    document.getElementById('progressPct').textContent = pct+'%';
+  }
+
+  function goTo(i){
+    if(cardEls[current]) cardEls[current].classList.remove('active');
+    if(steps[current] && steps[current].key === 'winai' && i !== current) stopCarousel();
+    current = i;
+    render(i);
+    var card = cardEls[i];
+    void card.offsetWidth; // force reflow so the transition plays instead of snapping
+    card.classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  /* ---------------- report builder ---------------- */
+  function pct(n, total){ return total ? Math.round(n/total*100) : 0; }
+
+  function countSingle(list, keyFn){
+    var m = {};
+    list.forEach(function(item){ var k = keyFn(item); if(k) m[k] = (m[k]||0)+1; });
+    return m;
+  }
+  function countMulti(list, arrFn){
+    var m = {};
+    list.forEach(function(item){ (arrFn(item)||[]).forEach(function(v){ if(v) m[v]=(m[v]||0)+1; }); });
+    return m;
+  }
+
+  function renderReportBars(container, entries, total, color){
+    container.innerHTML = '';
+    if(!entries.length){
+      container.innerHTML = '<p class="report-empty" style="padding:6px 0;">'+t('reportEmpty')+'</p>';
+      return;
+    }
+    var max = Math.max.apply(null, entries.map(function(e){return e[1];}).concat([1]));
+    entries.forEach(function(e){
+      var row = document.createElement('div'); row.className='report-bar-row';
+      var widthPct = Math.round(e[1]/max*100);
+      row.innerHTML =
+        '<div class="report-bar-label">'+e[0]+'</div>' +
+        '<div class="report-bar-track"><div class="report-bar-fill" style="width:'+widthPct+'%; background:'+color+'"></div></div>' +
+        '<div class="report-bar-value mono">'+pct(e[1], total)+'%</div>';
+      container.appendChild(row);
+    });
+  }
+
+  function reportSection(root, titleKey, id){
+    var sec = document.createElement('div'); sec.className='report-section';
+    sec.innerHTML = '<h3>'+t(titleKey)+'</h3><div id="'+id+'"></div>';
+    root.appendChild(sec);
+    return sec.querySelector('#'+id);
+  }
+
+  function renderReport(records){
+    var body = document.getElementById('reportBody');
+    body.innerHTML = '';
+    var N = records.length;
+
+    if(!N){
+      body.innerHTML = '<p class="report-empty">'+t('reportEmpty')+'</p>';
+      return;
+    }
+
+    var wantLessN = records.filter(function(r){return r.wantLess==='Y';}).length;
+    var heavyN = records.filter(function(r){return r.hours==='4-6' || r.hours==='6+';}).length;
+    var avgWinai = records.reduce(function(s,r){return s+(r.winai||0);},0)/N;
+
+    var statGrid = document.createElement('div'); statGrid.className='report-stat-grid';
+    statGrid.innerHTML =
+      '<div class="report-stat"><div class="v">'+N+'</div><div class="k">'+t('reportN')+'</div></div>' +
+      '<div class="report-stat"><div class="v">'+pct(wantLessN,N)+'%</div><div class="k">'+t('reportWantLess')+'</div></div>' +
+      '<div class="report-stat"><div class="v">'+pct(heavyN,N)+'%</div><div class="k">'+t('reportHeavy')+'</div></div>' +
+      '<div class="report-stat"><div class="v human">'+avgWinai.toFixed(1)+'</div><div class="k">'+t('reportWinaiAvg')+'</div></div>';
+    body.appendChild(statGrid);
+
+    var clsCount = countSingle(records, function(r){return r.cls;});
+    renderReportBars(reportSection(body,'reportSecClass','repClass'),
+      CLASSES.filter(function(c){return clsCount[c];}).map(function(c){return [c, clsCount[c]];}), N, 'var(--screen)');
+
+    var hoursCount = countSingle(records, function(r){return r.hours;});
+    renderReportBars(reportSection(body,'reportSecHours','repHours'),
+      HOURS_CODES.filter(function(h){return hoursCount[h];}).map(function(h){return [t('hours')[h], hoursCount[h]];}), N, 'var(--screen)');
+
+    var platCount = countMulti(records, function(r){return r.platforms;});
+    renderReportBars(reportSection(body,'reportSecPlatforms','repPlatforms'),
+      PLATFORM_CODES.filter(function(p){return platCount[p];}).map(function(p){return [t('platforms')[p], platCount[p]];}).sort(function(a,b){return b[1]-a[1];}), N, 'var(--screen)');
+
+    var devCount = countSingle(records, function(r){return r.device;});
+    renderReportBars(reportSection(body,'reportSecDevice','repDevice'),
+      DEVICE_CODES.filter(function(d){return devCount[d];}).map(function(d){return [t('device')[d], devCount[d]];}), N, 'var(--screen)');
+
+    var osCount = countSingle(records, function(r){return r.os;});
+    renderReportBars(reportSection(body,'reportSecOS','repOS'),
+      ['AND','IOS'].filter(function(o){return osCount[o];}).map(function(o){return [t('os')[o], osCount[o]];}), N, 'var(--screen)');
+
+    var wantCount = countSingle(records, function(r){return r.wantLess;});
+    renderReportBars(reportSection(body,'reportSecWantLess','repWant'),
+      WANT_CODES.filter(function(w){return wantCount[w];}).map(function(w){return [t('wantLess')[w], wantCount[w]];}), N, 'var(--screen)');
+
+    var actCount = countMulti(records, function(r){return r.actions;});
+    renderReportBars(reportSection(body,'reportSecActions','repActions'),
+      ACTION_CODES.filter(function(a){return actCount[a];}).map(function(a){return [t('actions')[a], actCount[a]];}).sort(function(a,b){return b[1]-a[1];}), N, 'var(--human)');
+
+    var impCount = countMulti(records, function(r){return r.impacts;});
+    renderReportBars(reportSection(body,'reportSecImpacts','repImpacts'),
+      IMPACT_CODES.filter(function(i){return impCount[i];}).map(function(i){return [t('impacts')[i], impCount[i]];}).sort(function(a,b){return b[1]-a[1];}), N, 'var(--human)');
+
+    var actyCount = countSingle(records, function(r){return r.activity;});
+    renderReportBars(reportSection(body,'reportSecActivity','repActivity'),
+      ACTIVITY_CODES.filter(function(a){return actyCount[a];}).map(function(a){return [t('activity')[a], actyCount[a]];}), N, 'var(--human)');
+
+    var winaiCount = countSingle(records, function(r){return r.winai;});
+    renderReportBars(reportSection(body,'reportSecWinai','repWinai'),
+      [1,2,3,4,5].filter(function(w){return winaiCount[w];}).map(function(w){return [w+' / 5', winaiCount[w]];}), N, 'var(--human)');
+
+    // conclusions (English-language summary, independent of UI language)
+    var concSec = document.createElement('div'); concSec.className='report-section';
+    concSec.innerHTML = '<h3>'+t('reportSecConclusions')+'</h3>';
+    var box = document.createElement('div'); box.className='report-conclusions';
+    var platEntries = Object.keys(platCount).map(function(k){return [t('platforms')[k], platCount[k]];}).sort(function(a,b){return b[1]-a[1];});
+    var devEntries = Object.keys(devCount).map(function(k){return [t('device')[k], devCount[k]];}).sort(function(a,b){return b[1]-a[1];});
+    var lines = [];
+    lines.push(N + ' student' + (N===1?'':'s') + ' responded' + (devEntries.length ? (', mostly on ' + devEntries[0][0] + ' (' + pct(devEntries[0][1],N) + '%).') : '.'));
+    if(platEntries.length) lines.push(platEntries[0][0] + ' is the most-used platform (' + pct(platEntries[0][1],N) + '%).');
+    lines.push(pct(heavyN,N) + '% spend 4+ hours a day on social media.');
+    lines.push(pct(wantLessN,N) + '% say they want to use it less.');
+    lines.push('Average interest in Winai is ' + avgWinai.toFixed(1) + ' / 5.');
+    lines.forEach(function(l){
+      var d = document.createElement('div'); d.className='report-conclusion'; d.textContent = l;
+      box.appendChild(d);
+    });
+    concSec.appendChild(box);
+    body.appendChild(concSec);
+  }
+
+  var reportOverlay = document.getElementById('reportOverlay');
+  document.getElementById('reportClose').addEventListener('click', function(){
+    reportOverlay.classList.remove('show');
+  });
+  document.getElementById('reportToggle').addEventListener('click', function(){
+    var pw = window.prompt(t('reportPwPrompt'));
+    if(pw === null) return;
+    if(pw !== CONFIG.REPORT_PASSWORD){ window.alert(t('reportPwWrong')); return; }
+    document.getElementById('reportTitle').textContent = t('reportTitle');
+    var body = document.getElementById('reportBody');
+    body.innerHTML = '<p class="report-empty">'+t('reportLoading')+'</p>';
+    reportOverlay.classList.add('show');
+
+    if(!CONFIG.SHEETS_WEBAPP_URL || CONFIG.SHEETS_WEBAPP_URL.indexOf('PASTE_') === 0){
+      body.innerHTML = '<p class="report-empty">'+t('reportError')+'</p>';
+      return;
+    }
+    fetch(CONFIG.SHEETS_WEBAPP_URL + '?pw=' + encodeURIComponent(pw))
+      .then(function(res){ return res.json(); })
+      .then(function(data){
+        if(!Array.isArray(data)) throw new Error('bad response');
+        renderReport(data);
+      })
+      .catch(function(){
+        body.innerHTML = '<p class="report-empty">'+t('reportError')+'</p>';
+      });
+  });
+
+  updateLangUI();
+  goTo(0);
+})();
+</script>
