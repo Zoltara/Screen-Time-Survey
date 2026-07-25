@@ -373,6 +373,8 @@
       testerHelp:"Try it for one month and tell me if it helps you reduce screen time and improve your habits.",
       testerYes:"Yes, I'm interested", testerNo:"No thanks",
       testerNickLabel:"Nickname", testerNickPlaceholder:"Your nickname", testerClassLabel:"Class",
+      testerEmailLabel:"Email (optional)", testerEmailPlaceholder:"Your email",
+      testerEmailNote:"* If you can't remember your email send it to me later",
       testerNote:"Extra points included.", testerSign:"I'll contact you later.\nThank you, A. Rambo",
       s10Eyebrow:"Last step", s10Q:"Review & send", s10Help:"Nothing identifying is included — just this summary.",
       rClass:"Class", rHours:"Hours/day", rPlatforms:"Platforms", rDevice:"Main device", rOS:"Operating system", rWantLess:"Wants to use less",
@@ -423,6 +425,8 @@
       testerHelp:"ลองใช้เป็นเวลา 1 เดือน แล้วบอกครูว่าแอปนี้ช่วยลดเวลาหน้าจอและพัฒนาพฤติกรรมของคุณได้ไหม",
       testerYes:"สนใจ", testerNo:"ไม่สนใจ",
       testerNickLabel:"ชื่อเล่น", testerNickPlaceholder:"ชื่อเล่นของคุณ", testerClassLabel:"ชั้น",
+      testerEmailLabel:"อีเมล (ไม่บังคับ)", testerEmailPlaceholder:"อีเมลของคุณ",
+      testerEmailNote:"* ถ้าจำอีเมลไม่ได้ ค่อยส่งให้ครูทีหลังก็ได้",
       testerNote:"มีคะแนนพิเศษให้สำหรับผู้ทดลองใช้", testerSign:"ครูจะติดต่อกลับภายหลัง\nขอบคุณครับ - ครูแรมโบ้",
       s10Eyebrow:"ขั้นตอนสุดท้าย", s10Q:"ตรวจทานแล้วส่ง", s10Help:"ไม่มีข้อมูลระบุตัวตน มีแค่สรุปนี้เท่านั้น",
       rClass:"ชั้น", rHours:"ชม./วัน", rPlatforms:"แพลตฟอร์ม", rDevice:"อุปกรณ์หลัก", rOS:"ระบบปฏิบัติการ", rWantLess:"อยากใช้น้อยลง",
@@ -472,7 +476,7 @@
   var state = {
     cls:null, hours:null, platforms:[], device:null, os:null, wantLess:null,
     actions:[], impacts:[], activity:null, winai:null,
-    tester:null, testerNick:'', testerClass:null
+    tester:null, testerNick:'', testerEmail:'', testerClass:null
   };
 
   function chip(html, selected, onClick, opts){
@@ -744,6 +748,19 @@
         });
         wrap.appendChild(nickInput);
 
+        var emailLabel = document.createElement('div'); emailLabel.className='field-label'; emailLabel.style.marginTop='14px'; emailLabel.textContent = t('testerEmailLabel');
+        wrap.appendChild(emailLabel);
+        var emailInput = document.createElement('input');
+        emailInput.type='email'; emailInput.className='text-input'; emailInput.placeholder = t('testerEmailPlaceholder');
+        emailInput.value = state.testerEmail || '';
+        emailInput.addEventListener('input', function(){
+          state.testerEmail = emailInput.value;
+        });
+        wrap.appendChild(emailInput);
+        var emailNote = document.createElement('p'); emailNote.className='help'; emailNote.style.cssText='margin:8px 0 0; font-size:12.5px;';
+        emailNote.textContent = t('testerEmailNote');
+        wrap.appendChild(emailNote);
+
         var classLabel = document.createElement('div'); classLabel.className='field-label'; classLabel.style.marginTop='14px'; classLabel.textContent = t('testerClassLabel');
         wrap.appendChild(classLabel);
         var classOpts = document.createElement('div'); classOpts.className='options grid3';
@@ -778,7 +795,7 @@
       row(t('rImpacts'), state.impacts.map(function(v){return t('impacts')[v];}).join(', '));
       row(t('rActivity'), t('activity')[state.activity]);
       row(t('rWinai'), state.winai + ' / 5');
-      row(t('rTester'), state.tester === 'Y' ? (state.testerNick + ' — ' + state.testerClass) : t('testerNo'));
+      row(t('rTester'), state.tester === 'Y' ? (state.testerNick + ' — ' + state.testerClass + (state.testerEmail ? ' — ' + state.testerEmail : '')) : t('testerNo'));
       body.appendChild(list);
 
       var btnRow = document.createElement('div'); btnRow.className='btn-row';
@@ -818,6 +835,7 @@
       winai: state.winai,
       tester: state.tester || '',
       testerNick: state.tester === 'Y' ? state.testerNick : '',
+      testerEmail: state.tester === 'Y' ? state.testerEmail : '',
       testerClass: state.tester === 'Y' ? state.testerClass : ''
     };
   }

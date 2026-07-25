@@ -13,7 +13,7 @@ var REPORT_PASSWORD = 'report'; // must match CONFIG.REPORT_PASSWORD in survey.h
 var HEADERS = [
   'Timestamp', 'Class', 'Hours', 'Platforms', 'Device', 'OS',
   'WantLess', 'Actions', 'Impacts', 'Activity', 'WinaiInterest',
-  'Tester', 'TesterNick', 'TesterClass'
+  'Tester', 'TesterNick', 'TesterEmail', 'TesterClass'
 ];
 
 function getSheet_(){
@@ -51,6 +51,7 @@ function doPost(e){
       data.winai || '',
       data.tester || '',
       data.testerNick || '',
+      data.testerEmail || '',
       data.testerClass || ''
     ]);
     return jsonOut_({ ok: true });
@@ -84,7 +85,8 @@ function doGet(e){
       winai: Number(row[10]) || 0,
       tester: row[11],
       testerNick: row[12],
-      testerClass: row[13]
+      testerEmail: row[13],
+      testerClass: row[14]
     };
   });
   return jsonOut_(records);
