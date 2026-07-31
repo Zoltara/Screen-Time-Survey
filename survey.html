@@ -470,6 +470,7 @@
   var HOURS_CODES = ["<1","1-2","2-4","4-6","6+"];
   var ACTIVITY_CODES = ["NONE","LIGHT","MOD","HIGH"];
   var CLASSES = ["M1","M2","M3","M4","M5","M6"];
+  var TESTER_CLASSES = ["M1/15","M1/16","M2/15","M2/16","M3/15","M3/16","M4A","M4B","M5A","M5B","M6A","M6B"];
   var DEVICE_CODES = ["PT","PC"];
   var WANT_CODES = ["Y","U","N"];
 
@@ -764,7 +765,7 @@
         var classLabel = document.createElement('div'); classLabel.className='field-label'; classLabel.style.marginTop='14px'; classLabel.textContent = t('testerClassLabel');
         wrap.appendChild(classLabel);
         var classOpts = document.createElement('div'); classOpts.className='options grid3';
-        CLASSES.forEach(function(c){
+        TESTER_CLASSES.forEach(function(c){
           classOpts.appendChild(chip(c, state.testerClass===c, function(){ state.testerClass=c; refreshBody(); }, {center:true, round:true}));
         });
         wrap.appendChild(classOpts);
