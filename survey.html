@@ -373,8 +373,8 @@
       testerHelp:"Try it for one month and tell me if it helps you reduce screen time and improve your habits.",
       testerYes:"Yes, I'm interested", testerNo:"No thanks",
       testerNickLabel:"Nickname", testerNickPlaceholder:"Your nickname", testerClassLabel:"Class",
-      testerEmailLabel:"Email (optional)", testerEmailPlaceholder:"Your email",
-      testerEmailNote:"* If you can't remember your email send it to me later",
+      testerEmailLabel:"Gmail (optional)", testerEmailPlaceholder:"Your Gmail",
+      testerEmailNote:"* If you can't remember your Gmail send it to me later",
       testerNote:"Extra points included.", testerSign:"I'll contact you later.\nThank you, A. Rambo",
       s10Eyebrow:"Last step", s10Q:"Review & send", s10Help:"Nothing identifying is included — just this summary.",
       rClass:"Class", rHours:"Hours/day", rPlatforms:"Platforms", rDevice:"Main device", rOS:"Operating system", rWantLess:"Wants to use less",
@@ -425,8 +425,8 @@
       testerHelp:"ลองใช้เป็นเวลา 1 เดือน แล้วบอกครูว่าแอปนี้ช่วยลดเวลาหน้าจอและพัฒนาพฤติกรรมของคุณได้ไหม",
       testerYes:"สนใจ", testerNo:"ไม่สนใจ",
       testerNickLabel:"ชื่อเล่น", testerNickPlaceholder:"ชื่อเล่นของคุณ", testerClassLabel:"ชั้น",
-      testerEmailLabel:"อีเมล (ไม่บังคับ)", testerEmailPlaceholder:"อีเมลของคุณ",
-      testerEmailNote:"* ถ้าจำอีเมลไม่ได้ ค่อยส่งให้ครูทีหลังก็ได้",
+      testerEmailLabel:"Gmail (ไม่บังคับ)", testerEmailPlaceholder:"Gmail ของคุณ",
+      testerEmailNote:"* ถ้าจำ Gmail ไม่ได้ ค่อยส่งให้ครูทีหลังก็ได้",
       testerNote:"มีคะแนนพิเศษให้สำหรับผู้ทดลองใช้", testerSign:"ครูจะติดต่อกลับภายหลัง\nขอบคุณครับ - ครูแรมโบ้",
       s10Eyebrow:"ขั้นตอนสุดท้าย", s10Q:"ตรวจทานแล้วส่ง", s10Help:"ไม่มีข้อมูลระบุตัวตน มีแค่สรุปนี้เท่านั้น",
       rClass:"ชั้น", rHours:"ชม./วัน", rPlatforms:"แพลตฟอร์ม", rDevice:"อุปกรณ์หลัก", rOS:"ระบบปฏิบัติการ", rWantLess:"อยากใช้น้อยลง",
@@ -710,7 +710,7 @@
       var caps = document.createElement('div'); caps.className='scale-caps';
       caps.innerHTML = '<span>'+t('scaleLo')+'</span><span>'+t('scaleHi')+'</span>';
       body.appendChild(caps);
-      addNav(body, {back:8, canNext:function(){return !!state.winai;}, next:10});
+      addNav(body, {back:8, canNext:function(){return !!state.winai;}, next: state.os==='AND' ? 10 : 11});
     }
   });
 
@@ -795,12 +795,14 @@
       row(t('rImpacts'), state.impacts.map(function(v){return t('impacts')[v];}).join(', '));
       row(t('rActivity'), t('activity')[state.activity]);
       row(t('rWinai'), state.winai + ' / 5');
-      row(t('rTester'), state.tester === 'Y' ? (state.testerNick + ' — ' + state.testerClass + (state.testerEmail ? ' — ' + state.testerEmail : '')) : t('testerNo'));
+      if(state.os === 'AND'){
+        row(t('rTester'), state.tester === 'Y' ? (state.testerNick + ' — ' + state.testerClass + (state.testerEmail ? ' — ' + state.testerEmail : '')) : t('testerNo'));
+      }
       body.appendChild(list);
 
       var btnRow = document.createElement('div'); btnRow.className='btn-row';
       var back = document.createElement('button'); back.className='btn ghost'; back.textContent=t('back');
-      back.addEventListener('click', function(){ goTo(10); });
+      back.addEventListener('click', function(){ goTo(state.os === 'AND' ? 10 : 9); });
       btnRow.appendChild(back);
 
       var send = document.createElement('button');
